@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elite.tetto.auth.dao.UserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.elite.tetto.auth.entity.UserEntity" id="userMap">
+        <result property="usrId" column="usr_id"/>
+        <result property="usrUsername" column="usr_username"/>
+        <result property="usrPassword" column="usr_password"/>
+        <result property="usrSex" column="usr_sex"/>
+        <result property="usrBirthday" column="usr_birthday"/>
+        <result property="usrHeader" column="usr_header"/>
+        <result property="usrEmail" column="usr_email"/>
+    </resultMap>
+
+
+</mapper>

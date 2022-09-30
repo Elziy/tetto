@@ -10,6 +10,12 @@ server:
     context-path: /renren-fast
 
 spring:
+  application:
+    name: tetto-admin-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.31.101:8848
   # 环境 dev|test|prod
   profiles:
     active: dev
