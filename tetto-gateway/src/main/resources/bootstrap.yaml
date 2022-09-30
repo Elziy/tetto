@@ -1,0 +1,14 @@
+server:
+  port: 88
+
+spring:
+  application:
+    name: tetto-gateway-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.31.101:8848
+      config:
+        server-addr: 192.168.31.101:8848
+        file-extension: yaml
+        group: DEV_GROUP
