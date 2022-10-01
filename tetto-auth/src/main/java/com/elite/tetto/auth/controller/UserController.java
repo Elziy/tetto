@@ -23,7 +23,7 @@ import java.util.Map;
 public class UserController {
     @Resource
     private UserService userService;
-    
+
     /**
      * 用户登录
      *
