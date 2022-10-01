@@ -3,14 +3,11 @@ package com.elite.tetto.auth.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.elite.tetto.common.entity.vo.LoginUserVo;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.service.UserService;
@@ -25,6 +22,22 @@ import com.elite.tetto.auth.service.UserService;
 public class UserController {
     @Autowired
     private UserService userService;
+    
+    /**
+     * 用户登录
+     *
+     * @param loginUserVo 登录用户信息
+     * @return {@link R}
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody LoginUserVo loginUserVo){
+        UserEntity user = userService.login(loginUserVo);
+        if (user != null) {
+            return R.ok().put("data", user);
+        } else {
+            return R.error("用户名或密码错误");
+        }
+    }
     
     /**
      * 列表
