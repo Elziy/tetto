@@ -1,16 +1,17 @@
 package com.elite.tetto.auth.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.elite.tetto.common.entity.vo.LoginUserVo;
-import com.elite.tetto.common.utils.PageUtils;
-import com.elite.tetto.common.utils.R;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.service.UserService;
+import com.elite.tetto.common.entity.vo.LoginUserVo;
+import com.elite.tetto.common.entity.vo.ResUserVo;
+import com.elite.tetto.common.exception.ExceptionCode;
+import com.elite.tetto.common.utils.PageUtils;
+import com.elite.tetto.common.utils.R;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * @author Elziy
@@ -20,7 +21,7 @@ import com.elite.tetto.auth.service.UserService;
 @RestController
 @RequestMapping("auth/user")
 public class UserController {
-    @Autowired
+    @Resource
     private UserService userService;
     
     /**
@@ -30,12 +31,22 @@ public class UserController {
      * @return {@link R}
      */
     @PostMapping("/login")
-    public R login(@RequestBody LoginUserVo loginUserVo){
+    public R login(@RequestBody LoginUserVo loginUserVo) {
         UserEntity user = userService.login(loginUserVo);
         if (user != null) {
             return R.ok().put("data", user);
         } else {
-            return R.error("用户名或密码错误");
+            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(), "用户名或密码错误");
+        }
+    }
+    
+    @PostMapping("/register")
+    public R register(@RequestBody ResUserVo resUserVo) {
+        boolean b = userService.register(resUserVo);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), "该邮箱已被注册");
         }
     }
     

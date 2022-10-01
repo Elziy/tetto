@@ -8,6 +8,7 @@ import com.elite.tetto.auth.dao.UserDao;
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
+import com.elite.tetto.common.entity.vo.ResUserVo;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,6 +49,25 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             boolean matches = passwordEncoder.matches(password, usrPassword);
             return matches ? userEntity : null;
     
+        }
+    }
+    
+    @Override
+    public boolean register(ResUserVo resUserVo) {
+        String email = resUserVo.getEmail();
+        String password = resUserVo.getPassword();
+        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserEntity::getUsrEmail, email);
+        UserEntity userEntity = this.getOne(wrapper);
+        if (userEntity != null) {
+            return false;
+        } else {
+            UserEntity entity = new UserEntity();
+            entity.setUsrSex("未知");
+            entity.setUsrUsername("tetto-" + email.substring(0, email.indexOf("@")));
+            entity.setUsrEmail(email);
+            entity.setUsrPassword(passwordEncoder.encode(password));
+            return this.save(entity);
         }
     }
     

@@ -3,6 +3,7 @@ package com.elite.tetto.auth.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
+import com.elite.tetto.common.entity.vo.ResUserVo;
 import com.elite.tetto.common.utils.PageUtils;
 
 import java.util.Map;
@@ -23,5 +24,13 @@ public interface UserService extends IService<UserEntity> {
      * @return {@link UserEntity}
      */
     UserEntity login(LoginUserVo loginUserVo);
+    
+    /**
+     * 用户注册
+     *
+     * @param resUserVo 用户注册信息
+     * @return boolean true:注册成功 false:注册失败
+     */
+    boolean register(ResUserVo resUserVo);
 }
 

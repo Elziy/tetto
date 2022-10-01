@@ -13,7 +13,7 @@ public enum ExceptionCode {
     
     PRODUCT_UP_EXCEPTION(11000, "商品上架异常"),
     
-    USER_EXIST_EXCEPTION(150001, "用户名已存在"),
+    USER_EXIST_EXCEPTION(150001, "该邮箱已被注册"),
     
     PHONE_EXIST_EXCEPTION(150002, "手机号已存在"),
     
