@@ -16,6 +16,7 @@
 		<module>tetto-gateway</module>
 		<module>tetto-common</module>
 		<module>tetto-auth</module>
+		<module>tetto-upload</module>
 	</modules>
 	
 	<!--项目版本控制-->
