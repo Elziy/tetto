@@ -2,6 +2,7 @@ package com.elite.tetto.auth.controller;
 
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.service.UserService;
+import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
 import com.elite.tetto.common.entity.vo.ResUserVo;
 import com.elite.tetto.common.exception.ExceptionCode;
@@ -32,11 +33,12 @@ public class UserController {
      */
     @PostMapping("/login")
     public R login(@RequestBody LoginUserVo loginUserVo) {
-        UserEntity user = userService.login(loginUserVo);
-        if (user != null) {
-            return R.ok().put("data", user);
+        LoginUserRes loginUser = userService.login(loginUserVo);
+        if (loginUser != null) {
+            return R.ok().put("data", loginUser);
         } else {
-            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(), "用户名或密码错误");
+            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(),
+                    ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getMsg());
         }
     }
     
@@ -46,7 +48,7 @@ public class UserController {
         if (b) {
             return R.ok();
         } else {
-            return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), "该邮箱已被注册");
+            return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_EXIST_EXCEPTION.getMsg());
         }
     }
     

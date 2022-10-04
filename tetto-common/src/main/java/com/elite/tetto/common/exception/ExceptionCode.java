@@ -17,7 +17,7 @@ public enum ExceptionCode {
     
     PHONE_EXIST_EXCEPTION(150002, "手机号已存在"),
     
-    LOGIN_PASSWORD_INVALID_EXCEPTION(150003, "账号或密码错误"),;
+    LOGIN_PASSWORD_INVALID_EXCEPTION(150003, "用户名或密码错误"),;
     
     
     private final Integer code;
