@@ -1,8 +1,5 @@
 package com.elite.tetto.image.controller;
 
-import com.elite.tetto.common.entity.vo.LoginUserVo;
-import com.elite.tetto.common.entity.vo.UpLoadAtlasVo;
-import com.elite.tetto.common.exception.ExceptionCode;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.AtlasEntity;
@@ -23,22 +20,7 @@ import java.util.Map;
 public class AtlasController {
     @Autowired
     private AtlasService atlasService;
-
-    /**
-     * 添加图集
-     *
-     * @param upLoadAtlasVo 新建图集实体
-     * @return {@link R}
-     */
-    public R upLoadAtla(@RequestBody UpLoadAtlasVo upLoadAtlasVo){
-        boolean b = atlasService.upLoadAtla(upLoadAtlasVo);
-        if (b) {
-            return R.ok();
-        } else {
-            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
-        }
-    }
-
+    
     /**
      * 列表
      */
