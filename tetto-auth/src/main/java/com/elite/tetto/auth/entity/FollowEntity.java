@@ -15,42 +15,22 @@ import lombok.Data;
  * @date 2022-10-04 14:32:08
  */
 @Data
-@TableName("usr_user")
-public class UserEntity implements Serializable {
+@TableName("follow")
+public class FollowEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 用户id
+	 * id
 	 */
 	@TableId
 	private Long id;
 	/**
-	 * 用户名
+	 * 关注者id
 	 */
-	private String username;
+	private Long uid;
 	/**
-	 * 密码
+	 * 被关注者id
 	 */
-	private String password;
-	/**
-	 * 性别
-	 */
-	private String sex;
-	/**
-	 * 生日
-	 */
-	private Date birthday;
-	/**
-	 * 头像
-	 */
-	private String header;
-	/**
-	 * 邮箱
-	 */
-	private String email;
-	/**
-	 * 个人介绍
-	 */
-	private String introduce;
+	private Long fid;
 
 }

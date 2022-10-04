@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elite.tetto.image.dao.AtlasDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.elite.tetto.image.entity.AtlasEntity" id="atlasMap">
+        <result property="id" column="id"/>
+        <result property="author" column="author"/>
+        <result property="uploaddate" column="uploadDate"/>
+        <result property="collectionnum" column="collectionNum"/>
+        <result property="browsenum" column="browseNum"/>
+        <result property="title" column="title"/>
+        <result property="introduction" column="introduction"/>
+        <result property="thumbnail" column="thumbnail"/>
+    </resultMap>
+
+
+</mapper>
