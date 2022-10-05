@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.auth.dao.UserDao;
 import com.elite.tetto.auth.entity.UserDetailsImpl;
 import com.elite.tetto.auth.entity.UserEntity;
+import com.elite.tetto.auth.entity.vo.UserInfoRes;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.auth.util.JwtUtil;
 import com.elite.tetto.common.constant.AuthConstant;
@@ -16,6 +17,8 @@ import com.elite.tetto.common.entity.vo.LoginUserVo;
 import com.elite.tetto.common.entity.vo.ResUserVo;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -151,6 +154,75 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         return loginUserRes;
+    }
+    
+    /**
+     * 通过uid获取用户信息<br>
+     * 根据登录用户的是否是自己返回不同的信息
+     *
+     * @param uid uid
+     * @return {@link UserInfoRes}
+     */
+    @Override
+    @Cacheable(value = "userInfo", key = "#uid") // 设置缓存
+    public UserInfoRes getUserInfoByUid(Long uid) {
+        UserEntity userEntity = this.getEntityByUid(uid);
+        if (userEntity == null) {
+            return null;
+        }
+        UserInfoRes userInfoRes = new UserInfoRes();
+        setBaseInfo(userInfoRes, userEntity);
+        // todo 设置可以访问的其他信息
+        
+        // 获取登录的用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        
+        if (Objects.nonNull(principal) && principal instanceof LoginUserRes) {
+            // 访问的是自己的信息
+            // todo 设置自己的信息
+            return userInfoRes;
+        } else {
+            // 访问的是别人的信息
+            return userInfoRes;
+        }
+    }
+    
+    /**
+     * 更新用户信息
+     *
+     * @param user 更新后的用户信息
+     */
+    @Override
+    @CacheEvict(value = "userInfo",key = "#user.id", allEntries = true) // 清除缓存
+    public void updateUserInfo(UserEntity user) {
+        this.updateById(user);
+    }
+    
+    /**
+     * 设置基本信息(不需要权限的信息)
+     *
+     * @param userEntity 用户实体
+     */
+    private void setBaseInfo(UserInfoRes userInfoRes, UserEntity userEntity) {
+        userInfoRes.setUid(userEntity.getId());
+        userInfoRes.setUsername(userEntity.getUsername());
+        userInfoRes.setEmail(userEntity.getEmail());
+        userInfoRes.setAvatar(userEntity.getHeader());
+        userInfoRes.setSex(userEntity.getSex());
+        userInfoRes.setIntroduce(userEntity.getIntroduce());
+        userInfoRes.setBirthday(userEntity.getBirthday());
+    }
+    
+    /**
+     * 获取用户基本信息通过uid
+     *
+     * @param uid uid
+     * @return {@link UserEntity}
+     */
+    public UserEntity getEntityByUid(Long uid) {
+        UserEntity userEntity = this.getById(uid);
+        return userEntity;
     }
     
 }

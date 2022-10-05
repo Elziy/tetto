@@ -69,11 +69,17 @@
 			<version>0.9.0</version>
 		</dependency>
 		
-		<!--spring session-->
+		<!--springCache-->
 		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
+		
+		<!--spring session-->
+		<!--<dependency>-->
+		<!--	<groupId>org.springframework.session</groupId>-->
+		<!--	<artifactId>spring-session-data-redis</artifactId>-->
+		<!--</dependency>-->
 		
 		<!--redis-->
 		<dependency>

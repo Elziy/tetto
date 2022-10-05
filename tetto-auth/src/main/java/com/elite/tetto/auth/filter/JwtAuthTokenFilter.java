@@ -47,14 +47,16 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.parseJWT(token);
             uid = claims.getSubject();
         } catch (Exception e) {
-            throw new RuntimeException("token非法");
+            filterChain.doFilter(request, response);
+            return;
         }
         
         // 从redis中获取登录用户
         String redisKey = AuthConstant.LOGIN_USER_KEY + uid;
         String json = redisTemplate.opsForValue().get(redisKey);
         if (Objects.isNull(json)) {
-            throw new RuntimeException("用户未登录");
+            filterChain.doFilter(request, response);
+            return;
         }
         LoginUserRes loginUser = JSON.parseObject(json, LoginUserRes.class);
         

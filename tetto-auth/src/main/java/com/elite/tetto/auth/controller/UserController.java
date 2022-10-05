@@ -1,6 +1,7 @@
 package com.elite.tetto.auth.controller;
 
 import com.elite.tetto.auth.entity.UserEntity;
+import com.elite.tetto.auth.entity.vo.UserInfoRes;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
@@ -96,16 +97,18 @@ public class UserController {
         return R.ok().put("data", loginUserRes);
     }
     
-    
     /**
      * 信息
      */
-    @RequestMapping("/info/{usrId}")
+    @GetMapping("/info/{uid}")
     // @RequiresPermissions("auth:user:info")
-    public R info(@PathVariable("usrId") Long usrId) {
-        UserEntity user = userService.getById(usrId);
-        
-        return R.ok().put("user", user);
+    public R info(@PathVariable("uid") Long uid) {
+        UserInfoRes userInfoRes = userService.getUserInfoByUid(uid);
+        if (userInfoRes != null) {
+            return R.ok().put("data", userInfoRes);
+        } else {
+            return R.error(ExceptionCode.USER_NOT_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_NOT_EXIST_EXCEPTION.getMsg());
+        }
     }
     
     /**
@@ -125,7 +128,7 @@ public class UserController {
     @RequestMapping("/update")
     // @RequiresPermissions("auth:user:update")
     public R update(@RequestBody UserEntity user) {
-        userService.updateById(user);
+        userService.updateUserInfo(user);
         
         return R.ok();
     }
