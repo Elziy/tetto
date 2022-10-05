@@ -27,11 +27,33 @@ public interface UserService extends IService<UserEntity> {
     LoginUserRes login(LoginUserVo loginUserVo);
     
     /**
+     * 优化用户登录
+     *
+     * @param loginUserVo 登录用户信息
+     * @return {@link LoginUserRes}
+     */
+    LoginUserRes loginByEmail(LoginUserVo loginUserVo);
+    
+    /**
      * 用户注册
      *
      * @param resUserVo 用户注册信息
      * @return boolean true:注册成功 false:注册失败
      */
     boolean register(ResUserVo resUserVo);
+    
+    /**
+     * 注销登录
+     *
+     * @return
+     */
+    boolean logout();
+    
+    /**
+     * 获取登录用户
+     *
+     * @return {@link LoginUserRes}
+     */
+    LoginUserRes getLoginUser();
 }
 

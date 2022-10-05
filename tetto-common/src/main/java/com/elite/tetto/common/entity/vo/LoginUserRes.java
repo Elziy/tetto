@@ -24,4 +24,6 @@ public class LoginUserRes {
     
     private Date birthday;
     
+    private String token;
+    
 }

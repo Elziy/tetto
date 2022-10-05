@@ -31,9 +31,26 @@ public class UserController {
      * @param loginUserVo 登录用户信息
      * @return {@link R}
      */
-    @PostMapping("/login")
+    // @PostMapping("/login")
     public R login(@RequestBody LoginUserVo loginUserVo) {
         LoginUserRes loginUser = userService.login(loginUserVo);
+        if (loginUser != null) {
+            return R.ok().put("data", loginUser);
+        } else {
+            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(),
+                    ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
+    
+    /**
+     * 用户登录
+     *
+     * @param loginUserVo 登录用户信息
+     * @return {@link R}
+     */
+    @PostMapping("/login")
+    public R login1(@RequestBody LoginUserVo loginUserVo) {
+        LoginUserRes loginUser = userService.loginByEmail(loginUserVo);
         if (loginUser != null) {
             return R.ok().put("data", loginUser);
         } else {
@@ -52,6 +69,16 @@ public class UserController {
         }
     }
     
+    @GetMapping("/logout")
+    public R logout() {
+        boolean b = userService.logout();
+        if (b) {
+            return R.ok("注销成功");
+        } else {
+            return R.error(ExceptionCode.UNAUTHORIZED.getCode(), ExceptionCode.UNAUTHORIZED.getMsg());
+        }
+    }
+    
     /**
      * 列表
      */
@@ -61,6 +88,12 @@ public class UserController {
         PageUtils page = userService.queryPage(params);
         
         return R.ok().put("page", page);
+    }
+    
+    @RequestMapping("/info")
+    public R info() {
+        LoginUserRes loginUserRes = userService.getLoginUser();
+        return R.ok().put("data", loginUserRes);
     }
     
     
