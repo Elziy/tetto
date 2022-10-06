@@ -19,6 +19,9 @@ public class FileNameUtil {
      */
     public static String getFileType(String fileName) {
         int index = fileName.lastIndexOf(".");
+        if (index == -1) {
+            return ".jpg";
+        }
         return fileName.substring(index);
     }
 }

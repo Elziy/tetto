@@ -24,6 +24,7 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         );
 
         return new PageUtils(page);
+        
     }
 
 }

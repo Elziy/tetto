@@ -1,12 +1,16 @@
-package com.elite.tetto.common.entity.vo;
+package com.elite.tetto.auth.entity.vo;
 
 import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 返回的用户信息
+ *
+ * @author Elziy
+ */
 @Data
-public class LoginUserRes {
-    
+public class UserInfoRes {
     private Long uid;
     
     private String username;
@@ -20,10 +24,20 @@ public class LoginUserRes {
     
     private String sex;
     
+    /**
+     * 个人介绍
+     */
     private String introduce;
     
     private Date birthday;
     
-    private String token;
+    /**
+     * 粉丝数
+     */
+    private Long followers;
     
+    /**
+     * 关注数
+     */
+    private Long following;
 }

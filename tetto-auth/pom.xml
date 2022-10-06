@@ -56,6 +56,25 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 		
+		<!--spring security-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<!--jwt依赖-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+		
+		<!--springCache-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		
 		<!--spring session-->
 		<!--<dependency>-->
 		<!--	<groupId>org.springframework.session</groupId>-->

@@ -1,6 +1,7 @@
 package com.elite.tetto.auth.controller;
 
 import com.elite.tetto.auth.entity.UserEntity;
+import com.elite.tetto.auth.entity.vo.UserInfoRes;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
@@ -31,9 +32,26 @@ public class UserController {
      * @param loginUserVo 登录用户信息
      * @return {@link R}
      */
-    @PostMapping("/login")
+    // @PostMapping("/login")
     public R login(@RequestBody LoginUserVo loginUserVo) {
         LoginUserRes loginUser = userService.login(loginUserVo);
+        if (loginUser != null) {
+            return R.ok().put("data", loginUser);
+        } else {
+            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(),
+                    ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
+    
+    /**
+     * 用户登录
+     *
+     * @param loginUserVo 登录用户信息
+     * @return {@link R}
+     */
+    @PostMapping("/login")
+    public R login1(@RequestBody LoginUserVo loginUserVo) {
+        LoginUserRes loginUser = userService.loginByEmail(loginUserVo);
         if (loginUser != null) {
             return R.ok().put("data", loginUser);
         } else {
@@ -52,6 +70,16 @@ public class UserController {
         }
     }
     
+    @GetMapping("/logout")
+    public R logout() {
+        boolean b = userService.logout();
+        if (b) {
+            return R.ok("注销成功");
+        } else {
+            return R.error(ExceptionCode.UNAUTHORIZED.getCode(), ExceptionCode.UNAUTHORIZED.getMsg());
+        }
+    }
+    
     /**
      * 列表
      */
@@ -63,16 +91,24 @@ public class UserController {
         return R.ok().put("page", page);
     }
     
+    @RequestMapping("/info")
+    public R info() {
+        LoginUserRes loginUserRes = userService.getLoginUser();
+        return R.ok().put("data", loginUserRes);
+    }
     
     /**
      * 信息
      */
-    @RequestMapping("/info/{usrId}")
+    @GetMapping("/info/{uid}")
     // @RequiresPermissions("auth:user:info")
-    public R info(@PathVariable("usrId") Long usrId) {
-        UserEntity user = userService.getById(usrId);
-        
-        return R.ok().put("user", user);
+    public R info(@PathVariable("uid") Long uid) {
+        UserInfoRes userInfoRes = userService.getUserInfoByUid(uid);
+        if (userInfoRes != null) {
+            return R.ok().put("data", userInfoRes);
+        } else {
+            return R.error(ExceptionCode.USER_NOT_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_NOT_EXIST_EXCEPTION.getMsg());
+        }
     }
     
     /**
@@ -92,7 +128,7 @@ public class UserController {
     @RequestMapping("/update")
     // @RequiresPermissions("auth:user:update")
     public R update(@RequestBody UserEntity user) {
-        userService.updateById(user);
+        userService.updateUserInfo(user);
         
         return R.ok();
     }
