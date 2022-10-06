@@ -129,7 +129,11 @@ public class UserController {
     @RequestMapping("/update")
     // @RequiresPermissions("auth:user:update")
     public R update(@RequestBody UserEntity user) {
-        userService.updateUserInfo(user);
+        try {
+            userService.updateUserInfo(user);
+        } catch (Exception e) {
+            return R.error(ExceptionCode.FORBIDDEN.getCode(), ExceptionCode.FORBIDDEN.getMsg());
+        }
         
         return R.ok();
     }

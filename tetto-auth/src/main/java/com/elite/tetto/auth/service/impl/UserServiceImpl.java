@@ -218,6 +218,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Override
     @CacheEvict(value = AuthConstant.USER_INFO_KEY, key = "#user.id") // 清除缓存
     public void updateUserInfo(UserEntity user) {
+        Long id = user.getId();
+        if (id == null) {
+            throw new RuntimeException("用户id不能为空");
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
+        Long uid = loginUserRes.getUid();
+        if (!id.equals(uid)) {
+            throw new RuntimeException("无权限修改");
+        }
         this.updateById(user);
     }
     
