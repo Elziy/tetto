@@ -34,7 +34,6 @@ import java.util.Objects;
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
     
-    
     @Resource(name = "bCryptPasswordEncoder")
     private BCryptPasswordEncoder passwordEncoder;
     
@@ -149,11 +148,28 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         return true;
     }
     
+    /**
+     * 获取登录用户的信息
+     *
+     * @return {@link LoginUserRes}
+     */
     @Override
     public LoginUserRes getLoginUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
-        return loginUserRes;
+        LoginUserRes userRes = new LoginUserRes();
+        // 为了数据一致性，重新从数据库中查询
+        UserEntity userEntity = getEntityByUid(loginUserRes.getUid());
+        userRes.setUid(loginUserRes.getUid());
+        userRes.setUsername(userEntity.getUsername());
+        userRes.setEmail(userEntity.getUsername());
+        userRes.setAvatar(userEntity.getHeader());
+        userRes.setSex(userEntity.getSex());
+        userRes.setIntroduce(userEntity.getIntroduce());
+        userRes.setBirthday(userEntity.getBirthday());
+        userRes.setToken(loginUserRes.getToken());
+        
+        return userRes;
     }
     
     /**
@@ -164,7 +180,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return {@link UserInfoRes}
      */
     @Override
-    @Cacheable(value = "userInfo", key = "#uid") // 设置缓存
+    @Cacheable(value = AuthConstant.USER_INFO_KEY, key = "#uid") // 设置缓存
     public UserInfoRes getUserInfoByUid(Long uid) {
         UserEntity userEntity = this.getEntityByUid(uid);
         if (userEntity == null) {
@@ -194,7 +210,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @param user 更新后的用户信息
      */
     @Override
-    @CacheEvict(value = "userInfo",key = "#user.id", allEntries = true) // 清除缓存
+    @CacheEvict(value = AuthConstant.USER_INFO_KEY, key = "#user.id") // 清除缓存
     public void updateUserInfo(UserEntity user) {
         this.updateById(user);
     }
