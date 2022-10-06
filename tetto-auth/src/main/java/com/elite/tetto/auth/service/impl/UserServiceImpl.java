@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.Objects;
 
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
+    public static final String DEFAULT_AVATAR = "http://static.tetto.com/default.jpg";
     
     @Resource(name = "bCryptPasswordEncoder")
     private BCryptPasswordEncoder passwordEncoder;
@@ -116,21 +118,25 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     }
     
     @Override
-    public boolean register(ResUserVo resUserVo) {
+    @CacheEvict(value = AuthConstant.USER_INFO_KEY, key = "#result") // 清除解决缓存穿透的缓存
+    @Transactional
+    public Long register(ResUserVo resUserVo) {
         String email = resUserVo.getEmail();
         String password = resUserVo.getPassword();
         LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserEntity::getEmail, email);
         UserEntity userEntity = this.getOne(wrapper);
         if (userEntity != null) {
-            return false;
+            return 0L;
         } else {
             UserEntity entity = new UserEntity();
             entity.setSex("未知");
+            entity.setHeader(DEFAULT_AVATAR);
             entity.setUsername(email.substring(0, email.indexOf("@")));
             entity.setEmail(email);
             entity.setPassword(passwordEncoder.encode(password));
-            return this.save(entity);
+            boolean save = this.save(entity);
+            return save ? entity.getId() : 0L;
         }
     }
     

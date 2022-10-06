@@ -41,7 +41,7 @@ public interface UserService extends IService<UserEntity> {
      * @param resUserVo 用户注册信息
      * @return boolean true:注册成功 false:注册失败
      */
-    boolean register(ResUserVo resUserVo);
+    Long register(ResUserVo resUserVo);
     
     /**
      * 注销登录

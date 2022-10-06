@@ -25,7 +25,7 @@ import java.util.Map;
 public class UserController {
     @Resource
     private UserService userService;
-
+    
     /**
      * 用户登录
      *
@@ -62,8 +62,9 @@ public class UserController {
     
     @PostMapping("/register")
     public R register(@RequestBody ResUserVo resUserVo) {
-        boolean b = userService.register(resUserVo);
-        if (b) {
+        Long id = userService.register(resUserVo);
+        if (id != 0L) {
+            System.out.println(id);
             return R.ok();
         } else {
             return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_EXIST_EXCEPTION.getMsg());
