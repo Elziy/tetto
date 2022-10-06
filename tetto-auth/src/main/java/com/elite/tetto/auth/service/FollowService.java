@@ -16,5 +16,7 @@ import java.util.Map;
 public interface FollowService extends IService<FollowEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    boolean follow(long uid, long fid);
 }
 

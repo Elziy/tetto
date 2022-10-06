@@ -3,6 +3,7 @@ package com.elite.tetto.auth.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.elite.tetto.common.exception.ExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,22 @@ import com.elite.tetto.common.utils.R;
 public class FollowController {
     @Autowired
     private FollowService followService;
+
+    /**
+     * 关注用户
+     *
+     * @param uid 关注者ID
+     * @param fid 被关注者ID
+     * @return {@link R}
+     */
+    public R follow(@RequestBody long uid,long fid){
+        boolean b=followService.follow(uid,fid);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 列表

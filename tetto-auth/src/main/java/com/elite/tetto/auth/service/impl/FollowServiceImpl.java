@@ -1,5 +1,6 @@
 package com.elite.tetto.auth.service.impl;
 
+import com.elite.tetto.auth.entity.UserEntity;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,14 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public boolean follow(long uid, long fid) {
+        FollowEntity follow=new FollowEntity();
+        follow.setFid(fid);
+        follow.setUid(uid);
+        return this.save(follow);
     }
 
 }
