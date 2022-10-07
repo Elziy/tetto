@@ -72,5 +72,13 @@ public interface UserService extends IService<UserEntity> {
      * @param user 更新后用户信息
      */
     void updateUserInfo(UserEntity user);
+    
+    /**
+     * 检查邮箱是否存在
+     *
+     * @param email 电子邮件
+     * @return boolean
+     */
+    boolean checkEmail(String email);
 }
 

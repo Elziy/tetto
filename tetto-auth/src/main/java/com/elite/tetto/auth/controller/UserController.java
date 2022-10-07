@@ -12,7 +12,6 @@ import com.elite.tetto.common.utils.R;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -113,14 +112,19 @@ public class UserController {
     }
     
     /**
-     * 保存
+     * 检查邮箱是否存在
+     *
+     * @param email 邮箱
+     * @return {@link R}
      */
-    @RequestMapping("/save")
-    // @RequiresPermissions("auth:user:save")
-    public R save(@RequestBody UserEntity user) {
-        userService.save(user);
-        
-        return R.ok();
+    @GetMapping("/checkEmail/{email}")
+    public R checkEmail(@PathVariable String email) {
+        boolean b = userService.checkEmail(email);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_EXIST_EXCEPTION.getMsg());
+        }
     }
     
     /**
@@ -132,21 +136,9 @@ public class UserController {
         try {
             userService.updateUserInfo(user);
         } catch (Exception e) {
-            return R.error(ExceptionCode.FORBIDDEN.getCode(), ExceptionCode.FORBIDDEN.getMsg());
+            return R.error(ExceptionCode.FORBIDDEN.getCode(), e.getMessage());
         }
         
         return R.ok();
     }
-    
-    /**
-     * 删除
-     */
-    @RequestMapping("/delete")
-    // @RequiresPermissions("auth:user:delete")
-    public R delete(@RequestBody Long[] usrIds) {
-        userService.removeByIds(Arrays.asList(usrIds));
-        
-        return R.ok();
-    }
-    
 }

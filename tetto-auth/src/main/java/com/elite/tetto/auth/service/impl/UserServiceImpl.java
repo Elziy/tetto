@@ -225,10 +225,46 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long uid = loginUserRes.getUid();
-        if (!id.equals(uid)) {
+        // 修改的不是自己的信息或者邮箱已经被占用
+        if (!id.equals(uid) || !checkEmail(user.getEmail())) {
             throw new RuntimeException("无权限修改");
         }
-        this.updateById(user);
+        boolean b = this.updateById(user);
+        if (!b) {
+            throw new RuntimeException("更新失败");
+        } else {
+            // 如果修改了邮箱，需要注销登录
+            if (!user.getEmail().equals(loginUserRes.getEmail())) {
+                logout();
+            }
+        }
+    }
+    
+    /**
+     * 检查邮箱是否存在
+     *
+     * @param email 邮箱
+     * @return boolean true 可用 false 不可用
+     */
+    @Override
+    public boolean checkEmail(String email) {
+        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserEntity::getEmail, email);
+        UserEntity userEntity = this.getOne(wrapper);
+        if (userEntity == null) {
+            return true;
+        } else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Object principal = authentication.getPrincipal();
+            // 如果是登录状态，且登录的用户的邮箱和传入的邮箱一致，则返回true
+            if (Objects.nonNull(principal) && principal instanceof LoginUserRes) {
+                LoginUserRes loginUserRes = (LoginUserRes) principal;
+                return loginUserRes.getEmail().equals(email);
+            } else {
+                // 如果不是登录状态，返回false
+                return false;
+            }
+        }
     }
     
     /**
