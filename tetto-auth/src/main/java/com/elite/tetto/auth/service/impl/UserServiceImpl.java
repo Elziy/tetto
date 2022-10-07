@@ -9,6 +9,7 @@ import com.elite.tetto.auth.dao.UserDao;
 import com.elite.tetto.auth.entity.UserDetailsImpl;
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.entity.vo.UserInfoRes;
+import com.elite.tetto.auth.service.FollowService;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.auth.util.JwtUtil;
 import com.elite.tetto.common.constant.AuthConstant;
@@ -44,6 +45,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
+    
+    @Resource
+    private FollowService followService;
     
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -195,6 +199,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UserInfoRes userInfoRes = new UserInfoRes();
         setBaseInfo(userInfoRes, userEntity);
         // todo 设置可以访问的其他信息
+        // 设置关注信息
+        
         
         // 获取登录的用户信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

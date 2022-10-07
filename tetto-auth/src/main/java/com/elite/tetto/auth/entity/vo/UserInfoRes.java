@@ -40,4 +40,10 @@ public class UserInfoRes {
      * 关注数
      */
     private Long following;
+    
+    // 是否关注
+    private Boolean isFollow;
+    
+    // 是否被关注
+    private Boolean isFollowed;
 }
