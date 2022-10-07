@@ -7,7 +7,7 @@
     <resultMap type="com.elite.tetto.image.entity.AtlasLabelEntity" id="atlasLabelMap">
         <result property="id" column="id"/>
         <result property="atlasId" column="atlas_id"/>
-        <result property="labelId" column="label_id"/>
+        <result property="labelName" column="label_name"/>
     </resultMap>
 
 

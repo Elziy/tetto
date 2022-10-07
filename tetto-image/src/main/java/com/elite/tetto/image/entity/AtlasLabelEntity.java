@@ -2,10 +2,9 @@ package com.elite.tetto.image.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * 
@@ -31,6 +30,6 @@ public class AtlasLabelEntity implements Serializable {
 	/**
 	 * 标签id
 	 */
-	private Long labelId;
+	private String labelName;
 
 }

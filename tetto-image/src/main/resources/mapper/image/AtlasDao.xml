@@ -6,10 +6,12 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.elite.tetto.image.entity.AtlasEntity" id="atlasMap">
         <result property="id" column="id"/>
+        <result property="uId" column="u_id"/>
         <result property="title" column="title"/>
         <result property="introduce" column="introduce"/>
         <result property="isPublic" column="is_public"/>
         <result property="thumbnailUrl" column="thumbnail_url"/>
+        <result property="date" column="date"/>
     </resultMap>
 
 
