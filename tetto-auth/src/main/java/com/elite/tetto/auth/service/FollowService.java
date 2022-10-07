@@ -25,7 +25,16 @@ public interface FollowService extends IService<FollowEntity> {
     boolean follow(long uid, long fid);
     
     /**
-     * 获取用户关注数量
+     * 用户取消关注
+     *
+     * @param uid uid
+     * @param fid 被关注者id
+     * @return boolean
+     */
+    boolean unfollow(long uid, long fid);
+    
+    /**
+     * 获取用户粉丝数量
      *
      * @param uid 用户id
      * @return {@link Integer}
@@ -33,7 +42,7 @@ public interface FollowService extends IService<FollowEntity> {
     Integer getFollowers(long uid);
     
     /**
-     * 获取用户的粉丝数量
+     * 获取用户的关注数量
      *
      * @param uid 用户id
      * @return {@link Integer}

@@ -80,5 +80,21 @@ public interface UserService extends IService<UserEntity> {
      * @return boolean
      */
     boolean checkEmail(String email);
+    
+    /**
+     * 关注用户
+     *
+     * @param fid 被关注的用户id
+     * @return boolean
+     */
+    boolean follow(long fid);
+    
+    /**
+     * 取消关注
+     *
+     * @param fid 被取消关注的用户id
+     * @return boolean
+     */
+    boolean unfollow(long fid);
 }
 

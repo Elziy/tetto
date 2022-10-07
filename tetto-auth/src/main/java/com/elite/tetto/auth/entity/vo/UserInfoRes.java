@@ -34,12 +34,12 @@ public class UserInfoRes {
     /**
      * 粉丝数
      */
-    private Long followers;
+    private int followers;
     
     /**
      * 关注数
      */
-    private Long following;
+    private int following;
     
     // 是否关注
     private Boolean isFollow;

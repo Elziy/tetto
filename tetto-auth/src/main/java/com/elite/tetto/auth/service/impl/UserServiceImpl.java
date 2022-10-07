@@ -190,7 +190,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @return {@link UserInfoRes}
      */
     @Override
-    @Cacheable(value = AuthConstant.USER_INFO_KEY, key = "#uid") // 设置缓存
+    // 只缓存空值，解决缓存穿透
+    @Cacheable(value = AuthConstant.USER_INFO_KEY, key = "#uid", unless = "#result != null ") // 设置缓存
     public UserInfoRes getUserInfoByUid(Long uid) {
         UserEntity userEntity = this.getEntityByUid(uid);
         if (userEntity == null) {
@@ -199,19 +200,28 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UserInfoRes userInfoRes = new UserInfoRes();
         setBaseInfo(userInfoRes, userEntity);
         // todo 设置可以访问的其他信息
-        // 设置关注信息
-        
+        // 设置请求用户的关注信息
+        Integer followers = followService.getFollowers(uid);
+        Integer following = followService.getFollowing(uid);
+        userInfoRes.setFollowers(followers);
+        userInfoRes.setFollowing(following);
         
         // 获取登录的用户信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
+        LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
+        Long loginUid = loginUserRes.getUid();
         
-        if (Objects.nonNull(principal) && principal instanceof LoginUserRes) {
+        if (loginUid.equals(uid)) {
             // 访问的是自己的信息
             // todo 设置自己的信息
             return userInfoRes;
         } else {
             // 访问的是别人的信息
+            // 查出登录用户与该用户的关注关系
+            boolean follow = followService.isFollow(loginUid, uid);
+            boolean followed = followService.isFollowed(loginUid, uid);
+            userInfoRes.setIsFollow(follow);
+            userInfoRes.setIsFollowed(followed);
             return userInfoRes;
         }
     }
@@ -222,7 +232,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
      * @param user 更新后的用户信息
      */
     @Override
-    @CacheEvict(value = AuthConstant.USER_INFO_KEY, key = "#user.id") // 清除缓存
+    // @CacheEvict(value = AuthConstant.USER_INFO_KEY, key = "#user.id") // 清除缓存
     public void updateUserInfo(UserEntity user) {
         Long id = user.getId();
         if (id == null) {
@@ -271,6 +281,35 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                 return false;
             }
         }
+    }
+    
+    /**
+     * 关注用户
+     *
+     * @param fid 被关注的用户id
+     * @return boolean
+     */
+    @Override
+    public boolean follow(long fid) {
+        // 得到登录用户
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
+        Long uid = loginUserRes.getUid();
+        return followService.follow(uid, fid);
+    }
+    
+    /**
+     * 取消关注
+     *
+     * @param fid 被取消关注的用户id
+     * @return boolean
+     */
+    @Override
+    public boolean unfollow(long fid) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
+        Long uid = loginUserRes.getUid();
+        return followService.unfollow(uid, fid);
     }
     
     /**

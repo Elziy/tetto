@@ -1,5 +1,6 @@
 package com.elite.tetto.auth.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,45 +16,64 @@ import java.util.Map;
 
 @Service("followService")
 public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> implements FollowService {
-
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<FollowEntity> page = this.page(
                 new Query<FollowEntity>().getPage(params),
                 new QueryWrapper<FollowEntity>()
         );
-
+        
         return new PageUtils(page);
     }
-
+    
     @Override
     public boolean follow(long uid, long fid) {
-        FollowEntity follow=new FollowEntity();
+        FollowEntity follow = new FollowEntity();
         follow.setFid(fid);
         follow.setUid(uid);
         return this.save(follow);
     }
     
     /**
-     * 获取用户关注数量
+     * 用户取消关注
+     *
+     * @param uid 用户id
+     * @param fid 被关注者id
+     * @return boolean
+     */
+    @Override
+    public boolean unfollow(long uid, long fid) {
+        LambdaQueryWrapper<FollowEntity> wrapper = new QueryWrapper<FollowEntity>().lambda();
+        wrapper.eq(FollowEntity::getUid, uid);
+        wrapper.eq(FollowEntity::getFid, fid);
+        return this.remove(wrapper);
+    }
+    
+    /**
+     * 获取用户粉丝数量
      *
      * @param uid 用户id
      * @return {@link Integer}
      */
     @Override
     public Integer getFollowers(long uid) {
-        return null;
+        LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowEntity::getFid, uid);
+        return Math.toIntExact(this.count(wrapper));
     }
     
     /**
-     * 获取用户的粉丝数量
+     * 获取用户的关注数量
      *
      * @param uid 用户id
      * @return {@link Integer}
      */
     @Override
     public Integer getFollowing(long uid) {
-        return null;
+        LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowEntity::getUid, uid);
+        return Math.toIntExact(this.count(wrapper));
     }
     
     /**
@@ -65,7 +85,10 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
      */
     @Override
     public boolean isFollow(long uid, long fid) {
-        return false;
+        LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowEntity::getUid, uid);
+        wrapper.eq(FollowEntity::getFid, fid);
+        return this.count(wrapper) > 0;
     }
     
     /**
@@ -77,7 +100,10 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
      */
     @Override
     public boolean isFollowed(long uid, long fid) {
-        return false;
+        LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowEntity::getUid, fid);
+        wrapper.eq(FollowEntity::getFid, uid);
+        return this.count(wrapper) > 0;
     }
     
 }

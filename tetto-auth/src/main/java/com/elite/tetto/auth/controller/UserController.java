@@ -31,25 +31,8 @@ public class UserController {
      * @param loginUserVo 登录用户信息
      * @return {@link R}
      */
-    // @PostMapping("/login")
-    public R login(@RequestBody LoginUserVo loginUserVo) {
-        LoginUserRes loginUser = userService.login(loginUserVo);
-        if (loginUser != null) {
-            return R.ok().put("data", loginUser);
-        } else {
-            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(),
-                    ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getMsg());
-        }
-    }
-    
-    /**
-     * 用户登录
-     *
-     * @param loginUserVo 登录用户信息
-     * @return {@link R}
-     */
     @PostMapping("/login")
-    public R login1(@RequestBody LoginUserVo loginUserVo) {
+    public R login(@RequestBody LoginUserVo loginUserVo) {
         LoginUserRes loginUser = userService.loginByEmail(loginUserVo);
         if (loginUser != null) {
             return R.ok().put("data", loginUser);
@@ -91,6 +74,11 @@ public class UserController {
         return R.ok().put("page", page);
     }
     
+    /**
+     * 获取登录用户信息
+     *
+     * @return {@link R}
+     */
     @RequestMapping("/info")
     public R info() {
         LoginUserRes loginUserRes = userService.getLoginUser();
@@ -98,7 +86,7 @@ public class UserController {
     }
     
     /**
-     * 信息
+     * 查询用户信息
      */
     @GetMapping("/info/{uid}")
     // @RequiresPermissions("auth:user:info")
@@ -108,6 +96,38 @@ public class UserController {
             return R.ok().put("data", userInfoRes);
         } else {
             return R.error(ExceptionCode.USER_NOT_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_NOT_EXIST_EXCEPTION.getMsg());
+        }
+    }
+    
+    /**
+     * 关注用户
+     *
+     * @param fid 被关注者ID
+     * @return {@link R}
+     */
+    @GetMapping("follow/{fid}")
+    public R follow(@PathVariable long fid) {
+        boolean b = userService.follow(fid);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+        }
+    }
+    
+    /**
+     * 取消关注
+     *
+     * @param fid 被关注者ID
+     * @return {@link R}
+     */
+    @GetMapping("unfollow/{fid}")
+    public R unfollow(@PathVariable long fid) {
+        boolean b = userService.unfollow(fid);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
         }
     }
     
