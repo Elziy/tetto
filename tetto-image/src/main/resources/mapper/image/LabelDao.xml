@@ -6,7 +6,7 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.elite.tetto.image.entity.LabelEntity" id="labelMap">
         <result property="id" column="id"/>
-        <result property="name" column="name"/>
+        <result property="labelName" column="label_name"/>
     </resultMap>
 
 

@@ -3,16 +3,16 @@
 
 <mapper namespace="com.elite.tetto.auth.dao.UserDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.elite.tetto.auth.entity.UserEntity" id="userMap">
-        <result property="usrId" column="usr_id"/>
-        <result property="usrUsername" column="usr_username"/>
-        <result property="usrPassword" column="usr_password"/>
-        <result property="usrSex" column="usr_sex"/>
-        <result property="usrBirthday" column="usr_birthday"/>
-        <result property="usrHeader" column="usr_header"/>
-        <result property="usrEmail" column="usr_email"/>
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.elite.tetto.auth.entity.UserEntity" id="usrUserMap">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="header" column="header"/>
+        <result property="email" column="email"/>
+        <result property="introduce" column="introduce"/>
     </resultMap>
-
 
 </mapper>

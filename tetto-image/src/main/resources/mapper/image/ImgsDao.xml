@@ -6,8 +6,8 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.elite.tetto.image.entity.ImgsEntity" id="imgsMap">
         <result property="id" column="id"/>
-        <result property="link" column="link"/>
-        <result property="atlasid" column="atlasId"/>
+        <result property="atlasId" column="atlas_id"/>
+        <result property="imgUrl" column="img_url"/>
     </resultMap>
 
 

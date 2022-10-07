@@ -6,13 +6,10 @@
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.elite.tetto.image.entity.AtlasEntity" id="atlasMap">
         <result property="id" column="id"/>
-        <result property="author" column="author"/>
-        <result property="uploaddate" column="uploadDate"/>
-        <result property="collectionnum" column="collectionNum"/>
-        <result property="browsenum" column="browseNum"/>
         <result property="title" column="title"/>
-        <result property="introduction" column="introduction"/>
-        <result property="thumbnail" column="thumbnail"/>
+        <result property="introduce" column="introduce"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="thumbnailUrl" column="thumbnail_url"/>
     </resultMap>
 
 
