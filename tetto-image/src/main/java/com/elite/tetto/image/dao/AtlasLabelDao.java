@@ -3,6 +3,9 @@ package com.elite.tetto.image.dao;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 
@@ -13,5 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AtlasLabelDao extends BaseMapper<AtlasLabelEntity> {
-	
+    
+    List<String> getAtlasLabelsByAid(@Param("aid") Long aid);
 }

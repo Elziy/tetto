@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
- *
  * @author Elziy
  * @email sunlightcs@gmail.com
  * @date 2022-10-07 14:39:01
  */
 public interface AtlasService extends IService<AtlasEntity> {
-
+    
     PageUtils queryPage(Map<String, Object> params);
     
     /**
@@ -25,7 +23,7 @@ public interface AtlasService extends IService<AtlasEntity> {
      * @param vo 上传作品集的信息
      * @return boolean
      */
-    boolean upload(UploadAtlasVo vo);
+    Long upload(UploadAtlasVo vo);
     
     /**
      * 通过用户id获取作品集信息
@@ -34,6 +32,15 @@ public interface AtlasService extends IService<AtlasEntity> {
      * @return {@link List}<{@link AtlasEntity}>
      */
     List<AtlasEntity> getAtlasINfoByUid(Long uid);
+    
+    /**
+     * 通过用户id获取作品集信息
+     *
+     * @param uid   用户id
+     * @param limit 限制数量
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
     /**
      * 获取作品集id获得作品集信息

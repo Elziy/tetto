@@ -9,6 +9,10 @@
         <result property="atlasId" column="atlas_id"/>
         <result property="labelName" column="label_name"/>
     </resultMap>
+	
+	<select id="getAtlasLabelsByAid" resultType="java.lang.String">
+		select label_name from img_atlas_label where atlas_id = #{aid}
+	</select>
 
 
 </mapper>

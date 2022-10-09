@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,13 @@ import java.util.Map;
 public interface AtlasLabelService extends IService<AtlasLabelEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+    
+    /**
+     * 通过图集id获取所有标签
+     *
+     * @param aid 图集id
+     * @return {@link List}<{@link String}>
+     */
+    List<String> getAtlasLabelsByAid(Long aid);
 }
 

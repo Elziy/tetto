@@ -27,8 +27,8 @@ public class AtlasController {
     // 上传作品集
     @PostMapping("/upload")
     public R upload(@RequestBody UploadAtlasVo vo) {
-        boolean b = atlasService.upload(vo);
-        if (b) {
+        Long b = atlasService.upload(vo);
+        if (!b.equals(0L)) {
             return R.ok();
         } else {
             return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());

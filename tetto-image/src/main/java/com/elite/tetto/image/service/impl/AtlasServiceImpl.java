@@ -16,6 +16,7 @@ import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,7 +57,8 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
      */
     @Override
     @Transactional
-    public boolean upload(UploadAtlasVo vo) {
+    @CacheEvict(value = {ImageConstant.USER_ALL_ATLAS, ImageConstant.USER_LATEST_ATLAS}, key = "#result")
+    public Long upload(UploadAtlasVo vo) {
         // 1. 获取登录用户的id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
@@ -99,17 +101,31 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         if (!saveImgs) {
             throw new RuntimeException("保存作品集图片失败");
         }
-        return true;
+        return uid;
     }
     
     /**
-     * 通过用户id获取作品集信息
+     * 通过用户id获取所有作品集信息
      *
      * @param uid 用户id
      * @return {@link List}<{@link AtlasEntity}>
      */
     @Override
+    @Cacheable(value = ImageConstant.USER_ALL_ATLAS, key = "#uid")
     public List<AtlasEntity> getAtlasINfoByUid(Long uid) {
+        return this.getAtlasINfoByUid(uid, null);
+    }
+    
+    /**
+     * 通过用户id获取拥有限制数量的作品集信息
+     *
+     * @param uid   用户id
+     * @param limit 限制数量
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    @Override
+    @Cacheable(value = ImageConstant.USER_LATEST_ATLAS, key = "#uid")
+    public List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit) {
         // 1. 获取登录用户的id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
@@ -120,11 +136,15 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         if (!loginUserId.equals(uid)) {
             queryWrapper.eq(AtlasEntity::getIsPublic, 1);
         }
+        // 3. 设置查询数量
+        queryWrapper.last(limit != null, "limit " + limit);
+        // 4. 设置时间倒叙排序
+        queryWrapper.orderByDesc(AtlasEntity::getDate);
         return this.list(queryWrapper);
     }
     
     /**
-     * 获取作品集id获得作品集信息
+     * 通过作品集id获得作品集信息
      *
      * @param aid 援助
      * @return {@link AtlasEntity}

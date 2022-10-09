@@ -33,4 +33,14 @@ public class ImgRes {
      * 图集图片信息
      */
     List<ImgsEntity> imgEntities;
+    
+    /**
+     * 图集标签
+     */
+    List<String> tags;
+    
+    /**
+     * 最新作品集
+     */
+    List<AtlasEntity> latestAtlas;
 }

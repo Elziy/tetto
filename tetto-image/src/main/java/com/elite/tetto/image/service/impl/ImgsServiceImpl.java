@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import com.elite.tetto.common.utils.R;
@@ -13,6 +14,7 @@ import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.to.UserInfoRes;
 import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.feign.AuthClient;
+import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     
     @Resource
     private AtlasService atlasService;
+    
+    @Resource
+    private AtlasLabelService atlasLabelService;
     
     @Resource(name = "imgServiceCache")
     private ImgsService imgServiceCache;
@@ -73,6 +78,10 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         // 获取作品集图片
         List<ImgsEntity> imgEntities = imgServiceCache.getImgsByAid(aid);
         imgRes.setImgEntities(imgEntities);
+        List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
+        imgRes.setTags(tags);
+        List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uId, ImageConstant.LATEST_ATLAS_NUM);
+        imgRes.setLatestAtlas(latestAtlas);
         return imgRes;
     }
     
