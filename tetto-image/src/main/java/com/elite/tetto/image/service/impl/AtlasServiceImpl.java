@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
@@ -15,6 +16,7 @@ import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -119,6 +121,18 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
             queryWrapper.eq(AtlasEntity::getIsPublic, 1);
         }
         return this.list(queryWrapper);
+    }
+    
+    /**
+     * 获取作品集id获得作品集信息
+     *
+     * @param aid 援助
+     * @return {@link AtlasEntity}
+     */
+    @Override
+    @Cacheable(value = ImageConstant.ATLAS_CACHE_PREFIX, key = "#aid")
+    public AtlasEntity getAtlasInfoByAid(Long aid) {
+        return this.getById(aid);
     }
     
 }

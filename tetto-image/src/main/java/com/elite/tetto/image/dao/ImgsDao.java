@@ -1,7 +1,7 @@
 package com.elite.tetto.image.dao;
 
-import com.elite.tetto.image.entity.ImgsEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.elite.tetto.image.entity.ImgsEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,5 +13,4 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ImgsDao extends BaseMapper<ImgsEntity> {
-	
 }

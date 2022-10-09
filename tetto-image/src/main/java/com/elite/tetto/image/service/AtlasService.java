@@ -34,5 +34,13 @@ public interface AtlasService extends IService<AtlasEntity> {
      * @return {@link List}<{@link AtlasEntity}>
      */
     List<AtlasEntity> getAtlasINfoByUid(Long uid);
+    
+    /**
+     * 获取作品集id获得作品集信息
+     *
+     * @param aid 援助
+     * @return {@link AtlasEntity}
+     */
+    AtlasEntity getAtlasInfoByAid(Long aid);
 }
 

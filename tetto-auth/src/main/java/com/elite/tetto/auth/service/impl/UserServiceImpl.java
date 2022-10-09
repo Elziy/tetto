@@ -24,6 +24,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginUserVo.getEmail(), loginUserVo.getPassword());
         // 执行认证
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        Authentication authenticate;
+        try {
+            authenticate = authenticationManager.authenticate(authenticationToken);
+        } catch (AuthenticationException e) {
+            return null;
+        }
         // 认证没有通过
         if (Objects.isNull(authenticate)) {
             return null;
@@ -295,6 +301,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long uid = loginUserRes.getUid();
+        // 关注自己
+        if (uid.equals(fid)) {
+            return false;
+        }
         return followService.follow(uid, fid);
     }
     

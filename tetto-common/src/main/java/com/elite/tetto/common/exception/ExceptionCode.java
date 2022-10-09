@@ -21,7 +21,8 @@ public enum ExceptionCode {
     
     LOGIN_PASSWORD_INVALID_EXCEPTION(150003, "用户名或密码错误"),
     
-    USER_NOT_EXIST_EXCEPTION(150004, "用户不存在");
+    USER_NOT_EXIST_EXCEPTION(150004, "用户不存在"),
+    ATLAS_NOT_EXIST(150005, "作品集不存在");
     
     
     private final Integer code;

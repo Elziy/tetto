@@ -37,8 +37,8 @@ public class UserController {
         if (loginUser != null) {
             return R.ok().put("data", loginUser);
         } else {
-            return R.error(ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getCode(),
-                    ExceptionCode.LOGIN_PASSWORD_INVALID_EXCEPTION.getMsg());
+            return R.error(ExceptionCode.UNAUTHORIZED.getCode(),
+                    ExceptionCode.UNAUTHORIZED.getMsg());
         }
     }
     
