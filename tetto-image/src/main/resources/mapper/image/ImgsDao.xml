@@ -8,6 +8,8 @@
         <result property="id" column="id"/>
         <result property="atlasId" column="atlas_id"/>
         <result property="imgUrl" column="img_url"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
     </resultMap>
 
 

@@ -2,10 +2,9 @@ package com.elite.tetto.image.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * 
@@ -32,5 +31,15 @@ public class ImgsEntity implements Serializable {
 	 * 图片url
 	 */
 	private String imgUrl;
+	
+	/**
+	 * 宽度
+	 */
+	private Integer width;
+	
+	/**
+	 * 高度
+	 */
+	private Integer height;
 
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,12 @@ public class AtlasController {
         }
     }
     
+    // 获取作品集列表
+    @GetMapping("/info/{uid}")
+    public R getAtlasINfoByUid(@PathVariable("uid") Long uid) {
+        List<AtlasEntity> atlasEntities = atlasService.getAtlasINfoByUid(uid);
+        return R.ok().put("data", atlasEntities);
+    }
     
     /**
      * 列表

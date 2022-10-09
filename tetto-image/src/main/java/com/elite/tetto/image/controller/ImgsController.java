@@ -24,6 +24,11 @@ import java.util.Map;
 public class ImgsController {
     @Autowired
     private ImgsService imgsService;
+    
+    @GetMapping("/{aid}")
+    public R getImgsByUid(@PathVariable("aid") Long aid) {
+        return R.ok();
+    }
 
     /**
      * 列表

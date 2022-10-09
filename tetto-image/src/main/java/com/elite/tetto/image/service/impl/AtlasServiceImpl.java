@@ -1,5 +1,6 @@
 package com.elite.tetto.image.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -87,7 +88,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         List<ImgsEntity> imgsEntities = vo.getImgUrls().stream().map(imgUrl -> {
             ImgsEntity imgsEntity = new ImgsEntity();
             imgsEntity.setAtlasId(atlasEntity.getId());
-            imgsEntity.setImgUrl(imgUrl);
+            imgsEntity.setImgUrl(imgUrl.getUrl());
+            imgsEntity.setWidth(imgUrl.getWidth());
+            imgsEntity.setHeight(imgUrl.getHeight());
             return imgsEntity;
         }).collect(Collectors.toList());
         boolean saveImgs = imgsService.saveBatch(imgsEntities);
@@ -95,6 +98,27 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
             throw new RuntimeException("保存作品集图片失败");
         }
         return true;
+    }
+    
+    /**
+     * 通过用户id获取作品集信息
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    @Override
+    public List<AtlasEntity> getAtlasINfoByUid(Long uid) {
+        // 1. 获取登录用户的id
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
+        Long loginUserId = loginUserRes.getUid();
+        LambdaQueryWrapper<AtlasEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AtlasEntity::getUId, uid);
+        // 2. 如果是自己的作品集，就查询所有的作品集，如果不是自己的作品集，就只查询公开的作品集
+        if (!loginUserId.equals(uid)) {
+            queryWrapper.eq(AtlasEntity::getIsPublic, 1);
+        }
+        return this.list(queryWrapper);
     }
     
 }

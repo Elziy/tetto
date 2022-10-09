@@ -5,6 +5,7 @@ import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,13 @@ public interface AtlasService extends IService<AtlasEntity> {
      * @return boolean
      */
     boolean upload(UploadAtlasVo vo);
+    
+    /**
+     * 通过用户id获取作品集信息
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    List<AtlasEntity> getAtlasINfoByUid(Long uid);
 }
 

@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class UploadAtlasVo {
-    private List<String> imgUrls;
+    private List<ImgUrl> imgUrls;
     private String introduce;
     private int isPublic;
     private List<String> tags;
