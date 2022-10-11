@@ -82,7 +82,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         // 获取作品集标签 缓存
         List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
         imgRes.setTags(tags);
-        // 获取作者最新作品集 缓存
+        // 获取作者最新作品集
         List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uId, ImageConstant.LATEST_ATLAS_NUM);
         imgRes.setLatestAtlas(latestAtlas);
         return imgRes;

@@ -26,7 +26,7 @@ public interface AtlasService extends IService<AtlasEntity> {
     Long upload(UploadAtlasVo vo);
     
     /**
-     * 通过用户id获取作品集信息
+     * 通过用户id获取所有作品集信息
      *
      * @param uid 用户id
      * @return {@link List}<{@link AtlasEntity}>
@@ -34,7 +34,7 @@ public interface AtlasService extends IService<AtlasEntity> {
     List<AtlasEntity> getAtlasINfoByUid(Long uid);
     
     /**
-     * 通过用户id获取作品集信息
+     * 通过用户id获取限制数量的最新作品集信息
      *
      * @param uid   用户id
      * @param limit 限制数量
@@ -42,9 +42,24 @@ public interface AtlasService extends IService<AtlasEntity> {
      */
     List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
+    
+    
+    
+    
+    /**
+     * 通过用户id获取所有(含非公开)作品集信息<br>
+     *
+     * 用于缓存
+     *
+     * @param uid   用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    List<AtlasEntity> getAllAtlasByUid(Long uid);
+    
     /**
      * 获取作品集id获得作品集信息 <br>
      * 用于缓存
+     *
      * @param aid 作品集id
      * @return {@link AtlasEntity}
      */

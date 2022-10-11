@@ -40,11 +40,14 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     @Resource
     private ImgsService imgsService;
     
+    @Resource(name = "atlasServiceCache")
+    private AtlasService atlasService;
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AtlasEntity> page = this.page(
                 new Query<AtlasEntity>().getPage(params),
-                new QueryWrapper<AtlasEntity>()
+                new QueryWrapper<>()
         );
         
         return new PageUtils(page);
@@ -58,7 +61,7 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
      */
     @Override
     @Transactional
-    @CacheEvict(value = {ImageConstant.USER_ALL_ATLAS, ImageConstant.USER_LATEST_ATLAS}, key = "#result")
+    @CacheEvict(value = {ImageConstant.USER_ALL_ATLAS}, key = "#result")
     public Long upload(UploadAtlasVo vo) {
         // 1. 获取登录用户的id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -112,7 +115,6 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
      * @return {@link List}<{@link AtlasEntity}>
      */
     @Override
-    @Cacheable(value = ImageConstant.USER_ALL_ATLAS, key = "#uid")
     public List<AtlasEntity> getAtlasINfoByUid(Long uid) {
         return this.getAtlasINfoByUid(uid, null);
     }
@@ -125,29 +127,49 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
      * @return {@link List}<{@link AtlasEntity}>
      */
     @Override
-    @Cacheable(value = ImageConstant.USER_LATEST_ATLAS, key = "#uid")
     public List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit) {
         // 1. 获取登录用户的id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long loginUserId = loginUserRes.getUid();
-        LambdaQueryWrapper<AtlasEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AtlasEntity::getUId, uid);
-        // 2. 如果是自己的作品集，就查询所有的作品集，如果不是自己的作品集，就只查询公开的作品集
-        if (!loginUserId.equals(uid)) {
-            queryWrapper.eq(AtlasEntity::getIsPublic, 1);
+        // 2. 获取用户所有作品集信息
+        List<AtlasEntity> atlasEntities = atlasService.getAllAtlasByUid(uid);
+        // 3. 不是自己的作品集，需要过滤掉私有作品集
+        if (!uid.equals(loginUserId)) {
+            atlasEntities = atlasEntities.stream()
+                    .filter(atlasEntity -> atlasEntity.getIsPublic() == 1)
+                    .collect(Collectors.toList());
         }
-        // 3. 设置查询数量
-        queryWrapper.last(limit != null, "limit " + limit);
-        // 4. 设置时间倒叙排序
-        queryWrapper.orderByDesc(AtlasEntity::getDate);
-        return this.list(queryWrapper);
+        // 4. 限制数量
+        if (limit != null) {
+            atlasEntities = atlasEntities.stream()
+                    .limit(limit)
+                    .collect(Collectors.toList());
+        }
+        return atlasEntities;
     }
     
     /**
-     * 通过作品集id获得作品集信息
+     * 通过用户id获取所有(含非公开)作品集信息<br>
+     * <p>
+     * 用于缓存
      *
-     * @param aid 援助
+     * @param uid 用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    @Override
+    public List<AtlasEntity> getAllAtlasByUid(Long uid) {
+        LambdaQueryWrapper<AtlasEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AtlasEntity::getUId, uid);
+        wrapper.orderByDesc(AtlasEntity::getDate);
+        return this.list(wrapper);
+    }
+    
+    /**
+     * 获取作品集id获得作品集信息 <br>
+     * 用于缓存
+     *
+     * @param aid 作品集id
      * @return {@link AtlasEntity}
      */
     @Override
@@ -158,8 +180,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     /**
      * 更新通过id <br>
-     *
+     * <p>
      * 更新后删除缓存
+     *
      * @param entity 实体
      * @return boolean
      */
@@ -167,7 +190,6 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     @Caching(evict = {
             @CacheEvict(value = ImageConstant.ATLAS_CACHE_PREFIX, key = "#entity.id"),
             @CacheEvict(value = ImageConstant.USER_ALL_ATLAS, key = "#entity.uId"),
-            @CacheEvict(value = ImageConstant.USER_LATEST_ATLAS, key = "#entity.uId")
     })
     public boolean updateById(AtlasEntity entity) {
         return super.updateById(entity);

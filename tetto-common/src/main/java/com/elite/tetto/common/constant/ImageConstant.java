@@ -7,9 +7,6 @@ public class ImageConstant {
     // 用户所有作品集缓存前缀
     public static final String USER_ALL_ATLAS = "user_all_atlas";
     
-    // 用户最新作品集缓存前缀
-    public static final String USER_LATEST_ATLAS = "user_latest_atlas";
-    
     // 图集缓存前缀
     public static final String ATLAS_CACHE_PREFIX = "atlas";
     
