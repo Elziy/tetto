@@ -43,9 +43,9 @@ public interface AtlasService extends IService<AtlasEntity> {
     List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
     /**
-     * 获取作品集id获得作品集信息
-     *
-     * @param aid 援助
+     * 获取作品集id获得作品集信息 <br>
+     * 用于缓存
+     * @param aid 作品集id
      * @return {@link AtlasEntity}
      */
     AtlasEntity getAtlasInfoByAid(Long aid);

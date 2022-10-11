@@ -18,6 +18,7 @@ import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -155,4 +156,20 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         return this.getById(aid);
     }
     
+    /**
+     * 更新通过id <br>
+     *
+     * 更新后删除缓存
+     * @param entity 实体
+     * @return boolean
+     */
+    @Override
+    @Caching(evict = {
+            @CacheEvict(value = ImageConstant.ATLAS_CACHE_PREFIX, key = "#entity.id"),
+            @CacheEvict(value = ImageConstant.USER_ALL_ATLAS, key = "#entity.uId"),
+            @CacheEvict(value = ImageConstant.USER_LATEST_ATLAS, key = "#entity.uId")
+    })
+    public boolean updateById(AtlasEntity entity) {
+        return super.updateById(entity);
+    }
 }

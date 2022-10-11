@@ -43,7 +43,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<ImgsEntity> page = this.page(
                 new Query<ImgsEntity>().getPage(params),
-                new QueryWrapper<ImgsEntity>()
+                new QueryWrapper<>()
         );
         
         return new PageUtils(page);
@@ -57,7 +57,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
      */
     @Override
     public ImgRes getImgResByAid(Long aid) {
-        // 获取作品集信息
+        // 获取作品集信息 缓存
         AtlasEntity atlas = atlasService.getAtlasInfoByAid(aid);
         if (atlas == null) {
             return null;
@@ -71,15 +71,18 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
             R r = authClient.getUserInfoByUid(uId);
             UserInfoRes userInfoRes = r.getData(new TypeReference<UserInfoRes>() {
             });
+            // 设置作者信息
             imgRes.setUserInfoRes(userInfoRes);
         } catch (Exception e) {
             return null;
         }
-        // 获取作品集图片
+        // 获取作品集图片 缓存
         List<ImgsEntity> imgEntities = imgServiceCache.getImgsByAid(aid);
         imgRes.setImgEntities(imgEntities);
+        // 获取作品集标签 缓存
         List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
         imgRes.setTags(tags);
+        // 获取作者最新作品集 缓存
         List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uId, ImageConstant.LATEST_ATLAS_NUM);
         imgRes.setLatestAtlas(latestAtlas);
         return imgRes;

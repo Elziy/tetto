@@ -82,9 +82,12 @@ public class AtlasController {
     @RequestMapping("/update")
     // @RequiresPermissions("image:atlas:update")
     public R update(@RequestBody AtlasEntity atlas) {
-        atlasService.updateById(atlas);
-        
-        return R.ok();
+        boolean b = atlasService.updateById(atlas);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+        }
     }
     
     /**
