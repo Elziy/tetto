@@ -43,4 +43,9 @@ public class ImgRes {
      * 最新作品集
      */
     List<AtlasEntity> latestAtlas;
+    
+    /**
+     * 是否点赞
+     */
+    Boolean like;
 }

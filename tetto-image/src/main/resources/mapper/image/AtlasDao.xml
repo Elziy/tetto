@@ -2,17 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.elite.tetto.image.dao.AtlasDao">
-
+	
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.elite.tetto.image.entity.AtlasEntity" id="atlasMap">
-        <result property="id" column="id"/>
-        <result property="uId" column="u_id"/>
-        <result property="title" column="title"/>
-        <result property="introduce" column="introduce"/>
-        <result property="isPublic" column="is_public"/>
-        <result property="thumbnailUrl" column="thumbnail_url"/>
-        <result property="date" column="date"/>
-    </resultMap>
+	<resultMap type="com.elite.tetto.image.entity.AtlasEntity" id="atlasMap">
+		<result property="id" column="id"/>
+		<result property="uId" column="u_id"/>
+		<result property="title" column="title"/>
+		<result property="introduce" column="introduce"/>
+		<result property="isPublic" column="is_public"/>
+		<result property="thumbnailUrl" column="thumbnail_url"/>
+		<result property="date" column="date"/>
+	</resultMap>
+	<select id="getLikeAtlasByUid" resultType="com.elite.tetto.image.entity.AtlasEntity">
+		SELECT *
+		FROM img_atlas AS a
+			     JOIN img_like AS l ON l.uid = #{uid} and a.id = l.aid and (a.u_id = l.uid or a.is_public = 1)
+		ORDER BY l.date DESC
+	</select>
 
 
 </mapper>

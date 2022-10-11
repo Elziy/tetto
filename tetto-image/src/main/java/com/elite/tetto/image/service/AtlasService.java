@@ -42,9 +42,13 @@ public interface AtlasService extends IService<AtlasEntity> {
      */
     List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
-    
-    
-    
+    /**
+     * 获取所有点赞图集通过用户id
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    List<AtlasEntity> getLikeAtlasByUid(Long uid);
     
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>

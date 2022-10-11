@@ -17,6 +17,8 @@ import com.elite.tetto.image.feign.AuthClient;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
+import com.elite.tetto.image.service.LikeService;
+import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,6 +37,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     
     @Resource
     private AtlasLabelService atlasLabelService;
+    
+    @Resource
+    private LikeService likeService;
     
     @Resource(name = "imgServiceCache")
     private ImgsService imgServiceCache;
@@ -62,6 +67,11 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         if (atlas == null) {
             return null;
         }
+        Long loginUserId = SecurityUtil.getLoginUserId();
+        // 不是自己的非公开作品集
+        if (!loginUserId.equals(atlas.getUId()) && atlas.getIsPublic() == 0) {
+            return null;
+        }
         ImgRes imgRes = new ImgRes();
         imgRes.setAId(atlas.getId());
         imgRes.setAtlas(atlas);
@@ -85,13 +95,17 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         // 获取作者最新作品集
         List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uId, ImageConstant.LATEST_ATLAS_NUM);
         imgRes.setLatestAtlas(latestAtlas);
+        // 获取登录用户是否点赞
+        boolean like = likeService.isLike(loginUserId, aid);
+        System.out.println("like = " + like);
+        imgRes.setLike(like);
         return imgRes;
     }
     
     /**
      * 用于缓存，在子类中实现
      *
-     * @param aid 援助
+     * @param aid 图集id
      * @return {@link List}<{@link ImgsEntity}>
      */
     @Override

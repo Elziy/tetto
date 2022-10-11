@@ -150,6 +150,18 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     }
     
     /**
+     * 通过用户id获取所有点赞图集(公开的)
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link AtlasEntity}>
+     */
+    @Override
+    public List<AtlasEntity> getLikeAtlasByUid(Long uid) {
+        List<AtlasEntity> atlasEntities = this.baseMapper.getLikeAtlasByUid(uid);
+        return atlasEntities;
+    }
+    
+    /**
      * 通过用户id获取所有(含非公开)作品集信息<br>
      * <p>
      * 用于缓存

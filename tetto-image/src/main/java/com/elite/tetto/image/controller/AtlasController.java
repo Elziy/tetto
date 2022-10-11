@@ -6,6 +6,7 @@ import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasService;
+import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,14 @@ public class AtlasController {
     @GetMapping("/info/{uid}")
     public R getAtlasINfoByUid(@PathVariable("uid") Long uid) {
         List<AtlasEntity> atlasEntities = atlasService.getAtlasINfoByUid(uid);
+        return R.ok().put("data", atlasEntities);
+    }
+    
+    // 获取用户点赞作品集列表
+    @GetMapping("/likes")
+    public R getLikeAtlasByUid() {
+        Long uid = SecurityUtil.getLoginUserId();
+        List<AtlasEntity> atlasEntities = atlasService.getLikeAtlasByUid(uid);
         return R.ok().put("data", atlasEntities);
     }
     
