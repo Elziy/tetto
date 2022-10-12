@@ -97,7 +97,6 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         imgRes.setLatestAtlas(latestAtlas);
         // 获取登录用户是否点赞
         boolean like = likeService.isLike(loginUserId, aid);
-        System.out.println("like = " + like);
         imgRes.setLike(like);
         return imgRes;
     }

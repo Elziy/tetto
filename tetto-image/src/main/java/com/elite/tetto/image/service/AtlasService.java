@@ -3,6 +3,7 @@ package com.elite.tetto.image.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.image.entity.AtlasEntity;
+import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 
 import java.util.List;
@@ -43,12 +44,19 @@ public interface AtlasService extends IService<AtlasEntity> {
     List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
     /**
-     * 获取所有点赞图集通过用户id
+     * 通过用户id获取所有点赞图集
      *
      * @param uid 用户id
      * @return {@link List}<{@link AtlasEntity}>
      */
     List<AtlasEntity> getLikeAtlasByUid(Long uid);
+    
+    /**
+     * 获取最新的10个作品集
+     *
+     * @return {@link List}<{@link AtlasRes}>
+     */
+    List<AtlasRes> getNewAtlas();
     
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>

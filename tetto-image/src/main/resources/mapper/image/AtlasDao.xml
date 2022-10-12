@@ -19,6 +19,20 @@
 			     JOIN img_like AS l ON l.uid = #{uid} and a.id = l.aid and (a.u_id = l.uid or a.is_public = 1)
 		ORDER BY l.date DESC
 	</select>
-
-
+	<select id="getNewAtlas" resultType="com.elite.tetto.image.entity.vo.AtlasRes">
+		SELECT a.id,
+		       a.u_id,
+		       a.title,
+		       a.introduce,
+		       a.is_public,
+		       a.thumbnail_url,
+		       a.date,
+		       u.username,
+		       u.header as avatar
+		FROM img_atlas AS a
+			     JOIN usr_user AS u ON a.u_id = u.id
+		where (a.is_public = 1 or a.u_id = #{uid})
+		ORDER BY a.date DESC
+		limit 0,#{limit}
+	</select>
 </mapper>

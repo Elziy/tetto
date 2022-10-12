@@ -4,6 +4,7 @@ import com.elite.tetto.common.exception.ExceptionCode;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.AtlasEntity;
+import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.util.SecurityUtil;
@@ -52,6 +53,30 @@ public class AtlasController {
     }
     
     /**
+     * 修改
+     */
+    @RequestMapping("/update")
+    // @RequiresPermissions("image:atlas:update")
+    public R update(@RequestBody AtlasEntity atlas) {
+        atlas.setDate(null);
+        // 重写update方法删缓存
+        System.out.println(atlas);
+        boolean b = atlasService.updateById(atlas);
+        if (b) {
+            return R.ok();
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+        }
+    }
+    
+    // 获取10个最新作品集
+    @GetMapping("/new")
+    public R getNewAtlas() {
+        List<AtlasRes> atlasRes = atlasService.getNewAtlas();
+        return R.ok().put("data", atlasRes);
+    }
+    
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -85,19 +110,6 @@ public class AtlasController {
         return R.ok();
     }
     
-    /**
-     * 修改
-     */
-    @RequestMapping("/update")
-    // @RequiresPermissions("image:atlas:update")
-    public R update(@RequestBody AtlasEntity atlas) {
-        boolean b = atlasService.updateById(atlas);
-        if (b) {
-            return R.ok();
-        } else {
-            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
-        }
-    }
     
     /**
      * 删除

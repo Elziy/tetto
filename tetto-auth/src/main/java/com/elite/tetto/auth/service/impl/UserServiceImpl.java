@@ -248,7 +248,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long uid = loginUserRes.getUid();
         // 修改的不是自己的信息或者邮箱已经被占用
-        if (!id.equals(uid) || !checkEmail(user.getEmail())) {
+        if (Objects.nonNull(user.getEmail()) && (!id.equals(uid) || !checkEmail(user.getEmail()))) {
             throw new RuntimeException("无权限修改");
         }
         boolean b = this.updateById(user);
@@ -256,7 +256,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             throw new RuntimeException("更新失败");
         } else {
             // 如果修改了邮箱，需要注销登录
-            if (!user.getEmail().equals(loginUserRes.getEmail())) {
+            if (Objects.nonNull(user.getEmail())) {
                 logout();
             }
         }

@@ -1,9 +1,10 @@
-package com.elite.tetto.image.service.impl;
+package com.elite.tetto.image.service.impl.cache;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.service.ImgsService;
+import com.elite.tetto.image.service.impl.ImgsServiceImpl;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 

@@ -12,13 +12,16 @@ import com.elite.tetto.image.dao.AtlasDao;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.elite.tetto.image.entity.ImgsEntity;
+import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
+import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     @Resource(name = "atlasServiceCache")
     private AtlasService atlasService;
+    
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redisTemplate;
     
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -74,7 +80,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         atlasEntity.setIntroduce(vo.getIntroduce());
         atlasEntity.setIsPublic(vo.getIsPublic());
         atlasEntity.setThumbnailUrl(vo.getThumbnailUrl());
-        atlasEntity.setDate(new Date());
+        Date date = new Date();
+        System.out.println(date);
+        atlasEntity.setDate(date);
         boolean saveAtlas = this.save(atlasEntity);
         if (!saveAtlas) {
             throw new RuntimeException("保存作品集失败");
@@ -105,6 +113,8 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         if (!saveImgs) {
             throw new RuntimeException("保存作品集图片失败");
         }
+        // 删除防止缓存穿透的key
+        redisTemplate.delete(ImageConstant.ATLAS_CACHE_PREFIX + "::" + atlasEntity.getId());
         return uid;
     }
     
@@ -159,6 +169,18 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     public List<AtlasEntity> getLikeAtlasByUid(Long uid) {
         List<AtlasEntity> atlasEntities = this.baseMapper.getLikeAtlasByUid(uid);
         return atlasEntities;
+    }
+    
+    /**
+     * 获取最新的10个作品集
+     *
+     * @return {@link List}<{@link AtlasRes}>
+     */
+    @Override
+    public List<AtlasRes> getNewAtlas() {
+        Long loginUserId = SecurityUtil.getLoginUserId();
+        List<AtlasRes> atlasRes = this.baseMapper.getNewAtlas(20, loginUserId);
+        return atlasRes;
     }
     
     /**
