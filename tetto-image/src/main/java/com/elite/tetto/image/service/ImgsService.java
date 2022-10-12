@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.vo.ImgRes;
+import com.elite.tetto.image.entity.vo.OnlyImgRes;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,14 @@ public interface ImgsService extends IService<ImgsEntity> {
      * @return {@link ImgRes}
      */
     ImgRes getImgResByAid(Long aid);
+    
+    /**
+     * 通过图集id获取只有单个图集信息的返回体
+     *
+     * @param aid 图集id
+     * @return {@link OnlyImgRes}
+     */
+    OnlyImgRes getOnlyImgResByAid(Long aid);
     
     /**
      * 通过作品集id获取所有图片实体

@@ -5,6 +5,7 @@ import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.vo.ImgRes;
+import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.service.ImgsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,16 @@ public class ImgsController {
         ImgRes imgRes = imgsService.getImgResByAid(aid);
         if (Objects.nonNull(imgRes)) {
             return R.ok().put("data", imgRes);
+        } else {
+            return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), ExceptionCode.ATLAS_NOT_EXIST.getMsg());
+        }
+    }
+    
+    @GetMapping("/img/{aid}")
+    public R getOnlyImgsByUid(@PathVariable("aid") Long aid) {
+        OnlyImgRes onlyImgResByAid = imgsService.getOnlyImgResByAid(aid);
+        if (Objects.nonNull(onlyImgResByAid)) {
+            return R.ok().put("data", onlyImgResByAid);
         } else {
             return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), ExceptionCode.ATLAS_NOT_EXIST.getMsg());
         }

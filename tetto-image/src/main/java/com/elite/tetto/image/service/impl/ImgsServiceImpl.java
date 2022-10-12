@@ -13,6 +13,7 @@ import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.to.UserInfoRes;
 import com.elite.tetto.image.entity.vo.ImgRes;
+import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
@@ -99,6 +100,39 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         boolean like = likeService.isLike(loginUserId, aid);
         imgRes.setLike(like);
         return imgRes;
+    }
+    
+    /**
+     * 通过图集id获取只有单个图集信息的返回体
+     *
+     * @param aid 图集id
+     * @return {@link OnlyImgRes}
+     */
+    @Override
+    public OnlyImgRes getOnlyImgResByAid(Long aid) {
+        // 获取作品集信息 缓存
+        AtlasEntity atlas = atlasService.getAtlasInfoByAid(aid);
+        if (atlas == null) {
+            return null;
+        }
+        Long loginUserId = SecurityUtil.getLoginUserId();
+        // 不是自己的非公开作品集
+        if (!loginUserId.equals(atlas.getUId()) && atlas.getIsPublic() == 0) {
+            return null;
+        }
+        OnlyImgRes onlyImgRes = new OnlyImgRes();
+        onlyImgRes.setAId(atlas.getId());
+        onlyImgRes.setAtlas(atlas);
+        // 获取作品集图片 缓存
+        List<ImgsEntity> imgEntities = imgServiceCache.getImgsByAid(aid);
+        onlyImgRes.setImgEntities(imgEntities);
+        // 获取作品集标签 缓存
+        List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
+        onlyImgRes.setTags(tags);
+        // 获取登录用户是否点赞
+        boolean like = likeService.isLike(loginUserId, aid);
+        onlyImgRes.setLike(like);
+        return onlyImgRes;
     }
     
     /**
