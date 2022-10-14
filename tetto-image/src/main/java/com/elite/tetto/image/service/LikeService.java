@@ -39,5 +39,13 @@ public interface LikeService extends IService<LikeEntity> {
      * @return boolean
      */
     boolean deleteLike(Long aid);
+    
+    /**
+     * 通过图集id删除所有点赞
+     *
+     * @param aid 图集id
+     * @return boolean
+     */
+    boolean removeLikeByAid(Long aid);
 }
 

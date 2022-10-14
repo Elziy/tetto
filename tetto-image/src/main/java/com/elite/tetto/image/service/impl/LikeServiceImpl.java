@@ -86,4 +86,17 @@ public class LikeServiceImpl extends ServiceImpl<LikeDao, LikeEntity> implements
                 .eq(LikeEntity::getUid, loginUserId);
         return this.remove(wrapper);
     }
+    
+    /**
+     * 通过图集id删除所有点赞
+     *
+     * @param aid 图集id
+     * @return boolean
+     */
+    @Override
+    public boolean removeLikeByAid(Long aid) {
+        LambdaQueryWrapper<LikeEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LikeEntity::getAid, aid);
+        return this.remove(wrapper);
+    }
 }

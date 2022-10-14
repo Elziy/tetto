@@ -10,7 +10,7 @@ public class ImageConstant {
     // 图集缓存前缀
     public static final String ATLAS_CACHE_PREFIX = "atlas";
     
-    // 图片缓存前缀
+    // 图集所对应所有图片的缓存前缀
     public static final String ATLAS_IMGS_CACHE_PREFIX = "atlas_imgs";
     
     // 图集标签缓存前缀

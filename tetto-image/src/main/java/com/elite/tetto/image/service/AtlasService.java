@@ -77,5 +77,15 @@ public interface AtlasService extends IService<AtlasEntity> {
      * @return {@link AtlasEntity}
      */
     AtlasEntity getAtlasInfoByAid(Long aid);
+    
+    /**
+     * 通过id删除图集<br>
+     * 用于删除缓存
+     *
+     * @param aid          图集id
+     * @param loginUserId 登录用户id
+     * @return boolean
+     */
+    boolean removeAtlasById(Long aid, Long loginUserId);
 }
 

@@ -37,11 +37,20 @@ public interface ImgsService extends IService<ImgsEntity> {
     OnlyImgRes getOnlyImgResByAid(Long aid);
     
     /**
-     * 通过作品集id获取所有图片实体
+     * 通过作品集id获取所有图片实体<br>
+     * 用户缓存
      *
-     * @param aid 援助
+     * @param aid 图集id
      * @return {@link List}<{@link ImgsEntity}>
      */
     List<ImgsEntity> getImgsByAid(Long aid);
+    
+    /**
+     * 通过图集id删除图集的所有图片<br>
+     *
+     * @param aid 图集id
+     * @return boolean
+     */
+    boolean removeImageByAid(Long aid);
 }
 

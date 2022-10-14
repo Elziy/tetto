@@ -18,6 +18,7 @@ import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
+import com.elite.tetto.image.service.LikeService;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,6 +47,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     @Resource(name = "atlasServiceCache")
     private AtlasService atlasService;
+    
+    @Resource
+    private LikeService likeService;
     
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
@@ -214,6 +218,55 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     @Cacheable(value = ImageConstant.ATLAS_CACHE_PREFIX, key = "#aid")
     public AtlasEntity getAtlasInfoByAid(Long aid) {
         return this.getById(aid);
+    }
+    
+    /**
+     * 通过id删除图集<br>
+     * 用于删除缓存
+     *
+     * @param aid         图集id
+     * @param loginUserId 登录用户id
+     * @return boolean
+     */
+    @Override
+    @Caching(evict = {
+            // 图集缓存
+            @CacheEvict(value = ImageConstant.ATLAS_CACHE_PREFIX, key = "#aid"),
+            // 用户所有图集缓存
+            @CacheEvict(value = ImageConstant.USER_ALL_ATLAS, key = "#loginUserId"),
+            // 图集对应的图片缓存
+            @CacheEvict(value = ImageConstant.ATLAS_IMGS_CACHE_PREFIX, key = "#aid"),
+            // 图集对应的标签缓存
+            @CacheEvict(value = ImageConstant.ATLAS_LABEL_CACHE_PREFIX, key = "#aid")
+    })
+    @Transactional
+    public boolean removeAtlasById(Long aid, Long loginUserId) {
+        // 查看是否是自己的图集
+        AtlasEntity atlasEntity = this.getAtlasInfoByAid(aid);
+        if (!atlasEntity.getUId().equals(loginUserId)) {
+            throw new RuntimeException("无法删除他人的作品集");
+        }
+        // 删除图集
+        boolean removeById = this.removeById(aid);
+        if (!removeById) {
+            throw new RuntimeException("删除作品集失败");
+        }
+        // 删除图集下的图片
+        boolean removeImageByAid = imgsService.removeImageByAid(aid);
+        if (!removeImageByAid) {
+            throw new RuntimeException("删除作品集下的作品失败");
+        }
+        // 删除图集的标签
+        boolean removeAtlasTagByAid = atlasLabelService.removeAtlasTagByAid(aid);
+        if (!removeAtlasTagByAid) {
+            throw new RuntimeException("删除作品集下的标签失败");
+        }
+        // 删除图集的点赞
+        boolean removeLikeByAid = likeService.removeLikeByAid(aid);
+        if (!removeLikeByAid) {
+            throw new RuntimeException("删除作品集下的点赞失败");
+        }
+        return true;
     }
     
     /**

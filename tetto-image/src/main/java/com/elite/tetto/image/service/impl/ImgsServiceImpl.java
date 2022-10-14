@@ -1,6 +1,7 @@
 package com.elite.tetto.image.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -144,5 +145,18 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     @Override
     public List<ImgsEntity> getImgsByAid(Long aid) {
         return null;
+    }
+    
+    /**
+     * 通过图集id删除图集的所有图片
+     *
+     * @param aid 图集id
+     * @return boolean
+     */
+    @Override
+    public boolean removeImageByAid(Long aid) {
+        LambdaQueryWrapper<ImgsEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ImgsEntity::getAtlasId, aid);
+        return this.remove(wrapper);
     }
 }

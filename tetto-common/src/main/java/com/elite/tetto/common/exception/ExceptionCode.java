@@ -29,8 +29,9 @@ public enum ExceptionCode {
     
     EMAIL_FORMAT_EXCEPTION(150007, "邮箱格式错误"),
     
-    CODE_ERROR(150008, "验证码错误");
+    CODE_ERROR(150008, "验证码错误"),
     
+    DELETE_ATLAS_ERROR(150009, "删除图集异常"),;
     
     private final Integer code;
     

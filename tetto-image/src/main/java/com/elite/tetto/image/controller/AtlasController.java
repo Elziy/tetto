@@ -75,6 +75,21 @@ public class AtlasController {
         return R.ok().put("data", atlasRes);
     }
     
+    // 删除作品集
+    @DeleteMapping("/{aid}")
+    public R delete(@PathVariable("aid") Long aid) {
+        try {
+            boolean b = atlasService.removeAtlasById(aid, SecurityUtil.getLoginUserId());
+            if (b) {
+                return R.ok();
+            } else {
+                return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+            }
+        } catch (Exception e) {
+            return R.error(ExceptionCode.DELETE_ATLAS_ERROR.getCode(), e.getMessage());
+        }
+    }
+    
     /**
      * 列表
      */

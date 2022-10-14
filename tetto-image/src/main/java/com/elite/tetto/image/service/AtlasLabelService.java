@@ -25,5 +25,13 @@ public interface AtlasLabelService extends IService<AtlasLabelEntity> {
      * @return {@link List}<{@link String}>
      */
     List<String> getAtlasLabelsByAid(Long aid);
+    
+    /**
+     * 通过图集id删除图集标签
+     *
+     * @param aid 图集id
+     * @return boolean
+     */
+    boolean removeAtlasTagByAid(Long aid);
 }
 
