@@ -8,4 +8,6 @@ public class ResUserVo {
     
     private String password;
     
+    private String code;
+    
 }

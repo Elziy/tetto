@@ -20,14 +20,6 @@ public interface UserService extends IService<UserEntity> {
     PageUtils queryPage(Map<String, Object> params);
     
     /**
-     * 用户登录
-     *
-     * @param loginUserVo 登录用户信息
-     * @return {@link UserEntity}
-     */
-    LoginUserRes login(LoginUserVo loginUserVo);
-    
-    /**
      * 优化用户登录
      *
      * @param loginUserVo 登录用户信息
@@ -49,6 +41,14 @@ public interface UserService extends IService<UserEntity> {
      * @return
      */
     boolean logout();
+    
+    /**
+     * 发送邮箱验证码
+     *
+     * @param email 电子邮件
+     * @return boolean
+     */
+    boolean sendCode(String email);
     
     /**
      * 获取登录用户

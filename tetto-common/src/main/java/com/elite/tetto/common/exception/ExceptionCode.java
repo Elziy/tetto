@@ -22,7 +22,14 @@ public enum ExceptionCode {
     LOGIN_PASSWORD_INVALID_EXCEPTION(150003, "用户名或密码错误"),
     
     USER_NOT_EXIST_EXCEPTION(150004, "用户不存在"),
-    ATLAS_NOT_EXIST(150005, "作品集不存在");
+    
+    ATLAS_NOT_EXIST(150005, "作品集不存在"),
+    
+    SEND_CODE_EXCEPTION(150006, "发送验证码失败"),
+    
+    EMAIL_FORMAT_EXCEPTION(150007, "邮箱格式错误"),
+    
+    CODE_ERROR(150008, "验证码错误");
     
     
     private final Integer code;

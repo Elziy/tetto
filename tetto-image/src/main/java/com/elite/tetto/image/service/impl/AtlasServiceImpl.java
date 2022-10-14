@@ -3,6 +3,7 @@ package com.elite.tetto.image.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
@@ -160,15 +161,18 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     }
     
     /**
-     * 通过用户id获取所有点赞图集(公开的)
+     * 通过用户id获取点赞图集(分页)
      *
-     * @param uid 用户id
+     * @param params 分页参数
+     * @param uid    用户id
      * @return {@link List}<{@link AtlasEntity}>
      */
     @Override
-    public List<AtlasEntity> getLikeAtlasByUid(Long uid) {
-        List<AtlasEntity> atlasEntities = this.baseMapper.getLikeAtlasByUid(uid);
-        return atlasEntities;
+    public PageUtils getLikeAtlasByUid(Map<String, Object> params, Long uid) {
+        // params.put(PageConstant.LIMIT, PageConstant.DEFAULT_LIMIT);
+        IPage<AtlasEntity> page = new Query<AtlasEntity>().getPage(params);
+        Page<AtlasEntity> entityPage = this.baseMapper.getLikeAtlasPageByUid(page, uid);
+        return new PageUtils(entityPage);
     }
     
     /**

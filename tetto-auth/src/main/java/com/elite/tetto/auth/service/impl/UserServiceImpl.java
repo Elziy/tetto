@@ -9,9 +9,11 @@ import com.elite.tetto.auth.dao.UserDao;
 import com.elite.tetto.auth.entity.UserDetailsImpl;
 import com.elite.tetto.auth.entity.UserEntity;
 import com.elite.tetto.auth.entity.vo.UserInfoRes;
+import com.elite.tetto.auth.service.EmailService;
 import com.elite.tetto.auth.service.FollowService;
 import com.elite.tetto.auth.service.UserService;
 import com.elite.tetto.auth.util.JwtUtil;
+import com.elite.tetto.auth.util.NumberUtils;
 import com.elite.tetto.common.constant.AuthConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.entity.vo.LoginUserVo;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
@@ -50,6 +53,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Resource
     private FollowService followService;
     
+    @Resource
+    private EmailService emailService;
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<UserEntity> page = this.page(
@@ -58,34 +64,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         );
         
         return new PageUtils(page);
-    }
-    
-    @Override
-    public LoginUserRes login(LoginUserVo loginUserVo) {
-        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(UserEntity::getEmail, loginUserVo.getEmail());
-        UserEntity userEntity = this.getOne(wrapper);
-        
-        if (userEntity == null) {
-            return null;
-        } else {
-            String password = loginUserVo.getPassword();
-            String usrPassword = userEntity.getPassword();
-            boolean matches = passwordEncoder.matches(password, usrPassword);
-            if (matches) {
-                LoginUserRes loginUserRes = new LoginUserRes();
-                loginUserRes.setUid(userEntity.getId());
-                loginUserRes.setUsername(userEntity.getUsername());
-                loginUserRes.setEmail(userEntity.getEmail());
-                loginUserRes.setAvatar(userEntity.getHeader());
-                loginUserRes.setSex(userEntity.getSex());
-                loginUserRes.setIntroduce(userEntity.getIntroduce());
-                loginUserRes.setBirthday(userEntity.getBirthday());
-                return loginUserRes;
-            } else {
-                return null;
-            }
-        }
     }
     
     @Override
@@ -133,6 +111,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     public Long register(ResUserVo resUserVo) {
         String email = resUserVo.getEmail();
         String password = resUserVo.getPassword();
+        String code = resUserVo.getCode();
+        // 验证码校验
+        String redisCode = redisTemplate.opsForValue().get(AuthConstant.VERIFICATION_CODE_KEY + email);
+        if (Objects.isNull(redisCode) || !redisCode.split("_")[0].equals(code)) {
+            throw new RuntimeException("验证码错误");
+        }
         LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserEntity::getEmail, email);
         UserEntity userEntity = this.getOne(wrapper);
@@ -162,6 +146,39 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         Long uid = loginUserRes.getUid();
         redisTemplate.delete(AuthConstant.LOGIN_USER_KEY + uid);
         return true;
+    }
+    
+    /**
+     * 发送邮箱验证码
+     *
+     * @param email 电子邮件
+     * @return boolean
+     */
+    @Override
+    public boolean sendCode(String email) {
+        String code = NumberUtils.getCode();
+        String redisCode = redisTemplate.opsForValue().get(AuthConstant.VERIFICATION_CODE_KEY + email);
+        if (redisCode != null) {
+            long l = Long.parseLong(redisCode.split("_")[1]);
+            if (System.currentTimeMillis() - l < 1000 * 60) {
+                throw new RuntimeException("频繁发送验证码");
+            }
+            code = redisCode.split("_")[0];
+        }
+        boolean mail;
+        try {
+            mail = emailService.sendMail(email, code,
+                    AuthConstant.REGISTER,
+                    AuthConstant.REGISTER_SUBJECT);
+        } catch (Exception e) {
+            throw new RuntimeException("请检查邮箱是否正确");
+        }
+        if (mail) {
+            redisTemplate.opsForValue().set(AuthConstant.VERIFICATION_CODE_KEY + email,
+                    code + "_" + System.currentTimeMillis(),
+                    5, TimeUnit.MINUTES);
+        }
+        return mail;
     }
     
     /**

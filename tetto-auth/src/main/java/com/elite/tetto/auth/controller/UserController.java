@@ -44,9 +44,13 @@ public class UserController {
     
     @PostMapping("/register")
     public R register(@RequestBody ResUserVo resUserVo) {
-        Long id = userService.register(resUserVo);
+        Long id = null;
+        try {
+            id = userService.register(resUserVo);
+        } catch (Exception e) {
+            return R.error(ExceptionCode.CODE_ERROR.getCode(), ExceptionCode.CODE_ERROR.getMsg());
+        }
         if (id != 0L) {
-            System.out.println(id);
             return R.ok();
         } else {
             return R.error(ExceptionCode.USER_EXIST_EXCEPTION.getCode(), ExceptionCode.USER_EXIST_EXCEPTION.getMsg());
@@ -60,6 +64,20 @@ public class UserController {
             return R.ok("注销成功");
         } else {
             return R.error(ExceptionCode.UNAUTHORIZED.getCode(), ExceptionCode.UNAUTHORIZED.getMsg());
+        }
+    }
+    
+    @GetMapping("/code")
+    public R code(@RequestParam("email") String email) {
+        try {
+            boolean b = userService.sendCode(email);
+            if (b) {
+                return R.ok("发送成功");
+            } else {
+                return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+            }
+        } catch (Exception e) {
+            return R.error(ExceptionCode.SEND_CODE_EXCEPTION.getCode(), e.getMessage());
         }
     }
     

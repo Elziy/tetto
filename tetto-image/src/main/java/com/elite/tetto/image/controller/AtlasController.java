@@ -44,12 +44,11 @@ public class AtlasController {
         return R.ok().put("data", atlasEntities);
     }
     
-    // 获取用户点赞作品集列表
-    @GetMapping("/likes")
-    public R getLikeAtlasByUid() {
-        Long uid = SecurityUtil.getLoginUserId();
-        List<AtlasEntity> atlasEntities = atlasService.getLikeAtlasByUid(uid);
-        return R.ok().put("data", atlasEntities);
+    // 获取用户点赞作品集列表(分页)
+    @GetMapping("/likes/page")
+    public R getAtlasINfoByUid(@RequestParam Map<String, Object> params) {
+        PageUtils pageUtils = atlasService.getLikeAtlasByUid(params, SecurityUtil.getLoginUserId());
+        return R.ok().put("data", pageUtils);
     }
     
     /**

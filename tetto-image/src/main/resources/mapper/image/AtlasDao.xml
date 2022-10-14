@@ -13,12 +13,13 @@
 		<result property="thumbnailUrl" column="thumbnail_url"/>
 		<result property="date" column="date"/>
 	</resultMap>
-	<select id="getLikeAtlasByUid" resultType="com.elite.tetto.image.entity.AtlasEntity">
+	<select id="getLikeAtlasPageByUid" resultType="com.elite.tetto.image.entity.AtlasEntity">
 		SELECT *
 		FROM img_atlas AS a
 			     JOIN img_like AS l ON l.uid = #{uid} and a.id = l.aid and (a.u_id = l.uid or a.is_public = 1)
 		ORDER BY l.date DESC
 	</select>
+	
 	<select id="getNewAtlas" resultType="com.elite.tetto.image.entity.vo.AtlasRes">
 		SELECT a.id,
 		       a.u_id,
@@ -35,4 +36,5 @@
 		ORDER BY a.date DESC
 		limit 0,#{limit}
 	</select>
+
 </mapper>

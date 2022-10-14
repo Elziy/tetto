@@ -44,12 +44,13 @@ public interface AtlasService extends IService<AtlasEntity> {
     List<AtlasEntity> getAtlasINfoByUid(Long uid, Long limit);
     
     /**
-     * 通过用户id获取所有点赞图集
+     * 通过用户id获取所有点赞图集(分页)
      *
-     * @param uid 用户id
+     * @param params 分页参数
+     * @param uid    用户id
      * @return {@link List}<{@link AtlasEntity}>
      */
-    List<AtlasEntity> getLikeAtlasByUid(Long uid);
+    PageUtils getLikeAtlasByUid(Map<String, Object> params, Long uid);
     
     /**
      * 获取最新的10个作品集
@@ -60,10 +61,10 @@ public interface AtlasService extends IService<AtlasEntity> {
     
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>
-     *
+     * <p>
      * 用于缓存
      *
-     * @param uid   用户id
+     * @param uid 用户id
      * @return {@link List}<{@link AtlasEntity}>
      */
     List<AtlasEntity> getAllAtlasByUid(Long uid);

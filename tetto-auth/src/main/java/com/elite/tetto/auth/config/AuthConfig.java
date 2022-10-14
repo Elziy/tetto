@@ -80,8 +80,9 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 对于登录接口 anonymous只允许匿名访问 permitAll都能访问
-                .antMatchers("/auth/user/register","/auth/user/checkEmail/{email}").permitAll()
+                .antMatchers("/auth/user/register", "/auth/user/checkEmail/{email}").permitAll()
                 .antMatchers("/auth/user/login").permitAll()
+                .antMatchers("/auth/user/code").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
         
