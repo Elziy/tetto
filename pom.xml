@@ -18,6 +18,7 @@
 		<module>tetto-auth</module>
 		<module>tetto-upload</module>
 		<module>tetto-image</module>
+		<module>tetto-recommend</module>
 	</modules>
 	
 	<!--项目版本控制-->

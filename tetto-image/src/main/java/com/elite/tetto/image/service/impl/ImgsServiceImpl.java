@@ -16,6 +16,7 @@ import com.elite.tetto.image.entity.to.UserInfoRes;
 import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
+import com.elite.tetto.image.feign.RecommendClient;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
@@ -33,6 +34,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     
     @Resource
     private AuthClient authClient;
+    
+    @Resource
+    private RecommendClient recommendClient;
     
     @Resource
     private AtlasService atlasService;
@@ -100,6 +104,8 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         // 获取登录用户是否点赞
         boolean like = likeService.isLike(loginUserId, aid);
         imgRes.setLike(like);
+        // 添加浏览历史
+        recommendClient.addHistory(aid);
         return imgRes;
     }
     
