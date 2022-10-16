@@ -1,4 +1,4 @@
-package com.elite.tetto.recommend.entity;
+package com.elite.tetto.image.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

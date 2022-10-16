@@ -1,8 +1,8 @@
-package com.elite.tetto.recommend.service;
+package com.elite.tetto.image.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.common.utils.PageUtils;
-import com.elite.tetto.recommend.entity.HistoryEntity;
+import com.elite.tetto.image.entity.HistoryEntity;
 
 import java.util.Map;
 

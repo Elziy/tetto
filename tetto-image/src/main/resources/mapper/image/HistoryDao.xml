@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.elite.tetto.recommend.dao.HistoryDao">
+<mapper namespace="com.elite.tetto.image.dao.HistoryDao">
 	
 	<!-- 可根据自己的需求，是否要使用 -->
-	<resultMap type="com.elite.tetto.recommend.entity.HistoryEntity" id="historyMap">
+	<resultMap type="com.elite.tetto.image.entity.HistoryEntity" id="historyMap">
 		<result property="id" column="id"/>
 		<result property="uid" column="uid"/>
 		<result property="aid" column="aid"/>

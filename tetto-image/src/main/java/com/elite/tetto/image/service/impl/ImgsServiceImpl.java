@@ -17,10 +17,7 @@ import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
 import com.elite.tetto.image.feign.RecommendClient;
-import com.elite.tetto.image.service.AtlasLabelService;
-import com.elite.tetto.image.service.AtlasService;
-import com.elite.tetto.image.service.ImgsService;
-import com.elite.tetto.image.service.LikeService;
+import com.elite.tetto.image.service.*;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +43,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     
     @Resource
     private LikeService likeService;
+    
+    @Resource
+    private HistoryService historyService;
     
     @Resource(name = "imgServiceCache")
     private ImgsService imgServiceCache;
@@ -105,7 +105,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         boolean like = likeService.isLike(loginUserId, aid);
         imgRes.setLike(like);
         // 添加浏览历史
-        recommendClient.addHistory(aid);
+        historyService.addHistory(loginUserId, aid);
         return imgRes;
     }
     

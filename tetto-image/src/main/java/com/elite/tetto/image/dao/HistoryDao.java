@@ -1,7 +1,7 @@
-package com.elite.tetto.recommend.dao;
+package com.elite.tetto.image.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.elite.tetto.recommend.entity.HistoryEntity;
+import com.elite.tetto.image.entity.HistoryEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

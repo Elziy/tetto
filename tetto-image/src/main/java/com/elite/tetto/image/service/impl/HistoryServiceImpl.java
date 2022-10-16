@@ -1,13 +1,13 @@
-package com.elite.tetto.recommend.service.impl;
+package com.elite.tetto.image.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
-import com.elite.tetto.recommend.dao.HistoryDao;
-import com.elite.tetto.recommend.entity.HistoryEntity;
-import com.elite.tetto.recommend.service.HistoryService;
+import com.elite.tetto.image.dao.HistoryDao;
+import com.elite.tetto.image.entity.HistoryEntity;
+import com.elite.tetto.image.service.HistoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

@@ -1,7 +1,7 @@
 package com.elite.tetto.image.dao;
 
-import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.elite.tetto.image.entity.AtlasLabelEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
