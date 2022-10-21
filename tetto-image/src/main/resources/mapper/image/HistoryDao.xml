@@ -11,7 +11,7 @@
 		<result property="browseTime" column="browse_time"/>
 	</resultMap>
 	<insert id="addHistory">
-		INSERT INTO rec_history
+		INSERT INTO img_history
 		VALUES (NULL, #{uid}, #{aid}, #{browseTime})
 		on DUPLICATE KEY
 			UPDATE browse_time = #{browseTime}

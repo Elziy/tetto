@@ -16,7 +16,6 @@ import com.elite.tetto.image.entity.to.UserInfoRes;
 import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
-import com.elite.tetto.image.feign.RecommendClient;
 import com.elite.tetto.image.service.*;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.stereotype.Service;
@@ -31,9 +30,6 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     
     @Resource
     private AuthClient authClient;
-    
-    @Resource
-    private RecommendClient recommendClient;
     
     @Resource
     private AtlasService atlasService;
@@ -75,16 +71,15 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         }
         Long loginUserId = SecurityUtil.getLoginUserId();
         // 不是自己的非公开作品集
-        if (!loginUserId.equals(atlas.getUId()) && atlas.getIsPublic() == 0) {
+        Long uid = atlas.getUId();
+        if (!loginUserId.equals(uid) && atlas.getIsPublic() == 0) {
             return null;
         }
         ImgRes imgRes = new ImgRes();
         imgRes.setAId(atlas.getId());
         imgRes.setAtlas(atlas);
-        // 作者id
-        Long uId = atlas.getUId();
         try {
-            R r = authClient.getUserInfoByUid(uId);
+            R r = authClient.getUserInfoByUid(uid);
             UserInfoRes userInfoRes = r.getData(new TypeReference<UserInfoRes>() {
             });
             // 设置作者信息
@@ -99,7 +94,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
         imgRes.setTags(tags);
         // 获取作者最新作品集
-        List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uId, ImageConstant.LATEST_ATLAS_NUM);
+        List<AtlasEntity> latestAtlas = atlasService.getAtlasINfoByUid(uid, ImageConstant.LATEST_ATLAS_NUM);
         imgRes.setLatestAtlas(latestAtlas);
         // 获取登录用户是否点赞
         boolean like = likeService.isLike(loginUserId, aid);
@@ -142,16 +137,6 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         return onlyImgRes;
     }
     
-    /**
-     * 用于缓存，在子类中实现
-     *
-     * @param aid 图集id
-     * @return {@link List}<{@link ImgsEntity}>
-     */
-    @Override
-    public List<ImgsEntity> getImgsByAid(Long aid) {
-        return null;
-    }
     
     /**
      * 通过图集id删除图集的所有图片
@@ -164,5 +149,17 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         LambdaQueryWrapper<ImgsEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ImgsEntity::getAtlasId, aid);
         return this.remove(wrapper);
+    }
+    
+    
+    /**
+     * 用于缓存，在子类中实现
+     *
+     * @param aid 图集id
+     * @return {@link List}<{@link ImgsEntity}>
+     */
+    @Override
+    public List<ImgsEntity> getImgsByAid(Long aid) {
+        return null;
     }
 }

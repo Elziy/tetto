@@ -59,6 +59,8 @@ public interface AtlasService extends IService<AtlasEntity> {
      */
     List<AtlasRes> getNewAtlas();
     
+    List<AtlasRes> getRecommendAtlas();
+    
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>
      * <p>

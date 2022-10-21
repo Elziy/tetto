@@ -1,5 +1,6 @@
 package com.elite.tetto.image.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,12 +10,14 @@ import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
+import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.dao.AtlasDao;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
+import com.elite.tetto.image.feign.RecommendClient;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
@@ -50,6 +53,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     @Resource
     private LikeService likeService;
+    
+    @Resource
+    private RecommendClient recommendClient;
     
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
@@ -187,8 +193,30 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     @Override
     public List<AtlasRes> getNewAtlas() {
         Long loginUserId = SecurityUtil.getLoginUserId();
-        List<AtlasRes> atlasRes = this.baseMapper.getNewAtlas(20, loginUserId);
+        List<AtlasRes> atlasRes = this.baseMapper.getNewAtlas(10, loginUserId);
         return atlasRes;
+    }
+    
+    /**
+     * @return
+     */
+    @Override
+    public List<AtlasRes> getRecommendAtlas() {
+        Long loginUserId = SecurityUtil.getLoginUserId();
+        try {
+            R r = recommendClient.getRecommendAtlasIds();
+            if (r.getCode() == 0) {
+                List<Long> atlasIds = r.getData(new TypeReference<List<Long>>() {
+                });
+                List<AtlasRes> atlasRes = this.baseMapper.getRecommendAtlas(atlasIds, loginUserId, 20);
+                return atlasRes;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     /**

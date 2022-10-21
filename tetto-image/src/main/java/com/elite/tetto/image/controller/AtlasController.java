@@ -75,6 +75,17 @@ public class AtlasController {
         return R.ok().put("data", atlasRes);
     }
     
+    // 获取10个推荐作品集
+    @GetMapping("/recommend")
+    public R getRecommendAtlas() {
+        List<AtlasRes> atlasRes = atlasService.getRecommendAtlas();
+        if (atlasRes != null) {
+            return R.ok().put("data", atlasRes);
+        } else {
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
+        }
+    }
+    
     // 删除作品集
     @DeleteMapping("/{aid}")
     public R delete(@PathVariable("aid") Long aid) {

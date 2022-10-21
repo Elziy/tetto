@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elite.tetto.recommend.dao.RecommendDao">
+	
+	<select id="getRandomAtlasIds" resultType="java.lang.Long">
+		SELECT id
+		FROM img_atlas
+		WHERE is_public = 1
+		  and u_id != #{uid}
+		  and id >= (SELECT floor(RAND() * (SELECT MAX(id) FROM img_atlas)))
+		ORDER BY id
+		LIMIT #{limit}
+	</select>
+	
+	<select id="getRecommendAtlasIds" resultType="java.lang.Long">
+		SELECT distinct atlas_id
+		FROM img_atlas_label
+		WHERE label_name in
+		<foreach collection="tags" item="tag" open="(" separator="," close=")">
+			#{tag}
+		</foreach>
+	</select>
+	
+	<select id="getRecommendAtlasTags" resultType="java.lang.String">
+		SELECT label_name,
+		       COUNT(atlas_id) AS num
+		FROM img_atlas_label
+		WHERE atlas_id IN (SELECT aid FROM img_like WHERE uid = #{uid})
+		GROUP BY label_name
+		ORDER BY num DESC
+	</select>
+
+</mapper>

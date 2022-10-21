@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2022-10-15 21:19:41
  */
 @Data
-@TableName("rec_history")
+@TableName("img_history")
 public class HistoryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
