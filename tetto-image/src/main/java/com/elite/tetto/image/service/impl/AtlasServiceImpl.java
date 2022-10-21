@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -290,10 +291,7 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
             throw new RuntimeException("删除作品集下的标签失败");
         }
         // 删除图集的点赞
-        boolean removeLikeByAid = likeService.removeLikeByAid(aid);
-        if (!removeLikeByAid) {
-            throw new RuntimeException("删除作品集下的点赞失败");
-        }
+        likeService.removeLikeByAid(aid);
         return true;
     }
     
@@ -311,6 +309,15 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
             @CacheEvict(value = ImageConstant.USER_ALL_ATLAS, key = "#entity.uId"),
     })
     public boolean updateById(AtlasEntity entity) {
+        System.out.println(entity);
+        Long loginUserId = SecurityUtil.getLoginUserId();
+        AtlasEntity atlasEntity = this.getAtlasInfoByAid(entity.getId());
+        if (Objects.isNull(atlasEntity) || !atlasEntity.getUId().equals(loginUserId)) {
+            throw new RuntimeException("无法修改他人的作品集");
+        }
+        if (!loginUserId.equals(atlasEntity.getUId())) {
+            throw new RuntimeException("无法修改他人的作品集");
+        }
         return super.updateById(entity);
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -28,21 +27,22 @@ public class ImgsController {
     
     @GetMapping("/{aid}")
     public R getImgsByUid(@PathVariable("aid") Long aid) {
-        ImgRes imgRes = imgsService.getImgResByAid(aid);
-        if (Objects.nonNull(imgRes)) {
+        try {
+            ImgRes imgRes = imgsService.getImgResByAid(aid);
             return R.ok().put("data", imgRes);
-        } else {
-            return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), ExceptionCode.ATLAS_NOT_EXIST.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), e.getMessage());
         }
     }
     
     @GetMapping("/img/{aid}")
     public R getOnlyImgsByUid(@PathVariable("aid") Long aid) {
-        OnlyImgRes onlyImgResByAid = imgsService.getOnlyImgResByAid(aid);
-        if (Objects.nonNull(onlyImgResByAid)) {
+        try {
+            OnlyImgRes onlyImgResByAid = imgsService.getOnlyImgResByAid(aid);
             return R.ok().put("data", onlyImgResByAid);
-        } else {
-            return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), ExceptionCode.ATLAS_NOT_EXIST.getMsg());
+        } catch (Exception e) {
+            return R.error(ExceptionCode.ATLAS_NOT_EXIST.getCode(), e.getMessage());
         }
     }
     

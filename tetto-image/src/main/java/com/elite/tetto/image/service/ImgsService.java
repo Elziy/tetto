@@ -8,6 +8,7 @@ import com.elite.tetto.image.entity.vo.OnlyImgRes;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 
@@ -26,7 +27,7 @@ public interface ImgsService extends IService<ImgsEntity> {
      * @param aid 作品集id
      * @return {@link ImgRes}
      */
-    ImgRes getImgResByAid(Long aid);
+    ImgRes getImgResByAid(Long aid) throws ExecutionException, InterruptedException;
     
     /**
      * 通过图集id获取只有单个图集信息的返回体
@@ -34,7 +35,7 @@ public interface ImgsService extends IService<ImgsEntity> {
      * @param aid 图集id
      * @return {@link OnlyImgRes}
      */
-    OnlyImgRes getOnlyImgResByAid(Long aid);
+    OnlyImgRes getOnlyImgResByAid(Long aid) throws ExecutionException, InterruptedException;
     
     /**
      * 通过作品集id获取所有图片实体<br>

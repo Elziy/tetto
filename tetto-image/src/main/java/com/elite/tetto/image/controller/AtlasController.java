@@ -59,8 +59,13 @@ public class AtlasController {
     public R update(@RequestBody AtlasEntity atlas) {
         atlas.setDate(null);
         // 重写update方法删缓存
-        System.out.println(atlas);
-        boolean b = atlasService.updateById(atlas);
+        boolean b = false;
+        try {
+            b = atlasService.updateById(atlas);
+        } catch (Exception e) {
+            
+            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), e.getMessage());
+        }
         if (b) {
             return R.ok();
         } else {
