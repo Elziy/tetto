@@ -9,6 +9,7 @@ import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class AtlasController {
     
     // 上传作品集
     @PostMapping("/upload")
-    public R upload(@RequestBody UploadAtlasVo vo) {
+    public R upload(@Validated @RequestBody UploadAtlasVo vo) {
         Long b = atlasService.upload(vo);
         if (!b.equals(0L)) {
             return R.ok();

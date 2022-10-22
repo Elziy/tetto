@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elite.tetto.search.dao.SearchDao">
+	
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="com.elite.tetto.search.entity.vo.AtlasRes" id="atlasMap">
+		<result property="id" column="id"/>
+		<result property="uId" column="u_id"/>
+		<result property="title" column="title"/>
+		<result property="introduce" column="introduce"/>
+		<result property="isPublic" column="is_public"/>
+		<result property="thumbnailUrl" column="thumbnail_url"/>
+		<result property="date" column="date"/>
+		<result property="username" column="username"/>
+		<result property="avatar" column="header"/>
+	</resultMap>
+	
+	<select id="searchAtlas" resultMap="atlasMap">
+		select a.id,
+		       a.u_id,
+		       a.title,
+		       a.introduce,
+		       a.is_public,
+		       a.thumbnail_url,
+		       a.date,
+		       u.username,
+		       u.header
+		from img_atlas_label as l
+			     join img_atlas as a on l.atlas_id = a.id
+			     join usr_user as u on a.u_id = u.id
+		where l.label_name like concat('%', #{keyword}, '%')
+		  and a.is_public = 1
+	</select>
+
+</mapper>

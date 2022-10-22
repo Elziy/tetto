@@ -1,12 +1,7 @@
-package com.elite.tetto.image.entity.vo;
+package com.elite.tetto.search.entity;
 
 import lombok.Data;
 
-/**
- * img url
- *
- * @author Elziy
- */
 @Data
 public class ImgUrl {
     private String url;

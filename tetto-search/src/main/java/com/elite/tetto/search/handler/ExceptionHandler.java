@@ -1,14 +1,9 @@
-package com.elite.tetto.image.handler;
+package com.elite.tetto.search.handler;
 
 import com.elite.tetto.common.exception.ExceptionCode;
 import com.elite.tetto.common.utils.R;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice(basePackages = "com.elite.tetto.image.controller")
 public class ExceptionHandler {
@@ -22,20 +17,6 @@ public class ExceptionHandler {
     public R passwordInvalidExceptionHandle() {
         return R.error(ExceptionCode.UNAUTHORIZED.getCode(),
                 ExceptionCode.UNAUTHORIZED.getMsg());
-    }
-    
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    public R validExceptionHandle(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        Map<String, String> map = new HashMap<>();
-        result.getFieldErrors()
-                .forEach(item -> {
-                    String field = item.getField();
-                    String message = item.getDefaultMessage();
-                    map.put(field, message);
-                });
-        return R.error(ExceptionCode.VALID_EXCEPTION.getCode(), ExceptionCode.VALID_EXCEPTION.getMsg())
-                .put("data", map);
     }
     
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)

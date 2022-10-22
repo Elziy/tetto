@@ -80,6 +80,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         Authentication authentication = context.getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long loginUserId = loginUserRes.getUid();
+    
+        ImgRes imgRes = new ImgRes();
+        
         CompletableFuture<AtlasEntity> atlasEntityCompletableFuture = CompletableFuture.supplyAsync(() -> {
             // 获取作品集信息 缓存
             AtlasEntity atlas = atlasService.getAtlasInfoByAid(aid);
@@ -93,8 +96,6 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
                 return atlas;
             }
         }, executor);
-        
-        ImgRes imgRes = new ImgRes();
         
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         CompletableFuture<Void> user = atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {

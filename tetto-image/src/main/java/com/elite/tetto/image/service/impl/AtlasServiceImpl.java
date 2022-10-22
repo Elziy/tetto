@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
+import com.elite.tetto.common.entity.vo.es.AtlasESModel;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import com.elite.tetto.common.utils.R;
@@ -18,6 +19,7 @@ import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.feign.RecommendClient;
+import com.elite.tetto.image.feign.SearchClient;
 import com.elite.tetto.image.service.AtlasLabelService;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.service.ImgsService;
@@ -57,6 +59,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     @Resource
     private RecommendClient recommendClient;
+    
+    @Resource
+    private SearchClient searchClient;
     
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
@@ -125,6 +130,25 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         if (!saveImgs) {
             throw new RuntimeException("保存作品集图片失败");
         }
+        
+        // 5. 保存作品集到es
+        AtlasESModel atlasESModel = new AtlasESModel();
+        atlasESModel.setId(atlasEntity.getId());
+        atlasESModel.setUid(atlasEntity.getUId());
+        atlasESModel.setTitle(atlasEntity.getTitle());
+        atlasESModel.setIntroduce(atlasEntity.getIntroduce());
+        atlasESModel.setTags(vo.getTags());
+        atlasESModel.setImgUrls(vo.getImgUrls());
+        atlasESModel.setThumbnailUrl(atlasEntity.getThumbnailUrl());
+        atlasESModel.setIsPublic(atlasEntity.getIsPublic());
+        atlasESModel.setDate(atlasEntity.getDate());
+        atlasESModel.setUsername(vo.getUsername());
+        atlasESModel.setAvatar(vo.getAvatar());
+        R r = searchClient.saveAtlas(atlasESModel);
+        if (r.getCode() != 0) {
+            throw new RuntimeException("保存作品集到es失败");
+        }
+        
         // 删除防止缓存穿透的key
         redisTemplate.delete(ImageConstant.ATLAS_CACHE_PREFIX + "::" + atlasEntity.getId());
         return uid;
@@ -289,6 +313,11 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         boolean removeAtlasTagByAid = atlasLabelService.removeAtlasTagByAid(aid);
         if (!removeAtlasTagByAid) {
             throw new RuntimeException("删除作品集下的标签失败");
+        }
+        
+        R r = searchClient.deleteAtlas(aid);
+        if (r.getCode() != 0) {
+            throw new RuntimeException("删除作品集失败");
         }
         // 删除图集的点赞
         likeService.removeLikeByAid(aid);

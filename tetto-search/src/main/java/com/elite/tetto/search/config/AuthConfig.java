@@ -1,6 +1,6 @@
-package com.elite.tetto.image.config;
+package com.elite.tetto.search.config;
 
-import com.elite.tetto.image.filter.JwtAuthTokenFilter;
+import com.elite.tetto.search.filter.JwtAuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -77,8 +77,6 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
                 // 对于登录接口 anonymous只允许匿名访问 permitAll都能访问
                 // .antMatchers("/auth/user/login").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                // 只能匿名访问
-                .antMatchers("/image/es/8BKB9ZN5lCGVqTJ0SeMWee6Uu").anonymous()
                 .anyRequest().authenticated();
         
         // 添加JWT filter

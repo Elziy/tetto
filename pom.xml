@@ -19,6 +19,7 @@
 		<module>tetto-upload</module>
 		<module>tetto-image</module>
 		<module>tetto-recommend</module>
+		<module>tetto-search</module>
 	</modules>
 	
 	<!--项目版本控制-->

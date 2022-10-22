@@ -1,0 +1,16 @@
+server:
+  port: 12000
+
+spring:
+  application:
+    name: tetto-search-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.31.101:8848 #配置中心地址
+        file-extension: yaml #指定yaml格式的配置
+        group: DEV_GROUP
+
+#  cache:
+#    redis:
+#      time-to-live: 3600000 #缓存时间一个小时

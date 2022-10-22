@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.elite.tetto.image.dao.ESDao">
+	<select id="getAtlasESModel" resultType="com.elite.tetto.common.entity.vo.es.AtlasESModel">
+		select a.id            as id,
+		       a.u_id          as uid,
+		       a.title         as title,
+		       a.introduce     as introduce,
+		       a.thumbnail_url as thumbnailUrl,
+		       a.is_public     as isPublic,
+		       a.date          as date,
+		       uu.username     as username,
+		       uu.header       as avatar
+		from img_atlas as a
+			     join usr_user uu on a.u_id = uu.id
+	</select>
+</mapper>
