@@ -32,5 +32,11 @@
 		where l.label_name like concat('%', #{keyword}, '%')
 		  and a.is_public = 1
 	</select>
+	<select id="getSuggestTags" resultType="com.elite.tetto.search.entity.vo.SuggestTags">
+		select distinct label_name as tag
+		from img_atlas_label
+		where label_name like concat('%', #{tag}, '%')
+		limit 10
+	</select>
 
 </mapper>

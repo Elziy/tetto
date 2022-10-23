@@ -1,6 +1,7 @@
 package com.elite.tetto.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.elite.tetto.common.constant.ESConstant;
 import com.elite.tetto.common.entity.vo.es.AtlasESModel;
 import com.elite.tetto.search.config.ElasticSearchConfig;
 import com.elite.tetto.search.service.SaveService;
@@ -30,7 +31,7 @@ public class SaveServiceImpl implements SaveService {
      */
     @Override
     public boolean saveAtlas(AtlasESModel atlasESModel) {
-        IndexRequest indexRequest = new IndexRequest("atlas");
+        IndexRequest indexRequest = new IndexRequest(ESConstant.ATLAS_INDEX);
         indexRequest.id(atlasESModel.getId().toString());
         indexRequest.source(JSON.toJSONString(atlasESModel), XContentType.JSON);
         try {
@@ -52,7 +53,7 @@ public class SaveServiceImpl implements SaveService {
      */
     @Override
     public boolean deleteAtlas(Long aid) {
-        DeleteRequest deleteRequest = new DeleteRequest("atlas", aid.toString());
+        DeleteRequest deleteRequest = new DeleteRequest(ESConstant.ATLAS_INDEX, aid.toString());
         try {
             client.delete(deleteRequest, ElasticSearchConfig.COMMON_OPTIONS);
             log.info("删除图集信息成功");
