@@ -25,5 +25,12 @@ public interface HistoryService extends IService<HistoryEntity> {
      * @return boolean
      */
     boolean addHistory(Long uid, Long aid);
+    
+    /**
+     * 通过图集id删除用户的历史记录
+     *
+     * @param aid 图集id
+     */
+    void removeHistoryByAid(Long aid);
 }
 

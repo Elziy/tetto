@@ -9,9 +9,10 @@ public interface RecommendService {
      *
      * @param uid   用户id
      * @param limit 限制
+     * @param tags
      * @return {@link List}<{@link Long}>
      */
-    List<Long> getRecommendAtlasIds(Long uid, Long limit);
+    List<Long> getRecommendAtlasIds(Long uid, Long limit, List<String> tags);
     
     
     /**
@@ -22,4 +23,13 @@ public interface RecommendService {
      * @return {@link List}<{@link String}>
      */
     List<String> getRecommendTags(Long uid, Long limit);
+    
+    /**
+     * 获取热门标签
+     *
+     * @param uid   用户id
+     * @param limit 限制
+     * @return {@link List}<{@link String}>
+     */
+    List<String> getHotTags(Long uid, Long limit);
 }

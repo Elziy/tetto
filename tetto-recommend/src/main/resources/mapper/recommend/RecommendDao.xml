@@ -7,6 +7,7 @@
 		FROM img_atlas
 		WHERE is_public = 1
 		  and u_id != #{uid}
+		  and id not in (select aid from img_like where uid = #{uid})
 		  and id >= (SELECT floor(RAND() * (SELECT MAX(id) FROM img_atlas)))
 		ORDER BY id
 		LIMIT #{limit}
@@ -19,15 +20,29 @@
 		<foreach collection="tags" item="tag" open="(" separator="," close=")">
 			#{tag}
 		</foreach>
+		and atlas_id not in (select aid from img_like where uid = #{uid})
+		ORDER BY RAND()
+		limit #{limit}
 	</select>
 	
-	<select id="getRecommendAtlasTags" resultType="java.lang.String">
-		SELECT label_name,
-		       COUNT(atlas_id) AS num
+	<select id="getLikeAtlasTags" resultType="com.elite.tetto.recommend.entity.UserTagsEntity">
+		SELECT label_name      AS tag,
+		       COUNT(atlas_id) AS count
 		FROM img_atlas_label
 		WHERE atlas_id IN (SELECT aid FROM img_like WHERE uid = #{uid})
 		GROUP BY label_name
-		ORDER BY num DESC
+		ORDER BY count DESC
+		limit #{limit}
+	</select>
+	
+	<select id="getHistoryAtlasTags" resultType="com.elite.tetto.recommend.entity.UserTagsEntity">
+		SELECT label_name      AS tag,
+		       COUNT(atlas_id) AS count
+		FROM img_atlas_label
+		WHERE atlas_id IN (SELECT aid FROM img_history WHERE uid = #{uid} and browse_time > #{time})
+		GROUP BY label_name
+		ORDER BY count DESC
+		limit #{limit}
 	</select>
 
 </mapper>

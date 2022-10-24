@@ -20,10 +20,7 @@ import com.elite.tetto.image.entity.vo.AtlasRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.feign.RecommendClient;
 import com.elite.tetto.image.feign.SearchClient;
-import com.elite.tetto.image.service.AtlasLabelService;
-import com.elite.tetto.image.service.AtlasService;
-import com.elite.tetto.image.service.ImgsService;
-import com.elite.tetto.image.service.LikeService;
+import com.elite.tetto.image.service.*;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -56,6 +53,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     
     @Resource
     private LikeService likeService;
+    
+    @Resource
+    private HistoryService historyService;
     
     @Resource
     private RecommendClient recommendClient;
@@ -321,6 +321,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         }
         // 删除图集的点赞
         likeService.removeLikeByAid(aid);
+        
+        // 删除图集的历史
+        historyService.removeHistoryByAid(aid);
         return true;
     }
     

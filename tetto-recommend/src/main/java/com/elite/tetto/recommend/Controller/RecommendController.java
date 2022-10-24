@@ -1,5 +1,6 @@
 package com.elite.tetto.recommend.Controller;
 
+import com.elite.tetto.common.constant.RecommendConstant;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.recommend.service.RecommendService;
 import com.elite.tetto.recommend.util.SecurityUtil;
@@ -20,7 +21,8 @@ public class RecommendController {
     @GetMapping("/atlas")
     public R getRecommendAtlasIds() {
         Long uid = SecurityUtil.getLoginUserId();
-        List<Long> atlasIds = recommendService.getRecommendAtlasIds(uid, 20L);
+        List<String> tags = recommendService.getRecommendTags(uid, RecommendConstant.RECOMMEND_TAG_LIMIT);
+        List<Long> atlasIds = recommendService.getRecommendAtlasIds(uid, RecommendConstant.RECOMMEND_ATLAS_LIMIT, tags);
         return R.ok().put("data", atlasIds);
     }
 }

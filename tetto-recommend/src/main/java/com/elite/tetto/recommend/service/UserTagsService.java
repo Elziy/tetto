@@ -16,5 +16,14 @@ import java.util.Map;
 public interface UserTagsService extends IService<UserTagsEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+    
+    /**
+     * 保存用户标签
+     *
+     * @param uid  用户id
+     * @param tags 标签
+     * @return boolean
+     */
+    boolean saveUserTags(Long uid, Map<String,Long> tags);
 }
 
