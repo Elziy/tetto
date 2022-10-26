@@ -6,6 +6,7 @@ import com.elite.tetto.image.entity.AtlasLabelEntity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -33,5 +34,12 @@ public interface AtlasLabelService extends IService<AtlasLabelEntity> {
      * @return boolean
      */
     boolean removeAtlasTagByAid(Long aid);
+    
+    /**
+     * 获取热门标签
+     *
+     * @return {@link List}<{@link String}>
+     */
+    Set<String> getHotTags();
 }
 

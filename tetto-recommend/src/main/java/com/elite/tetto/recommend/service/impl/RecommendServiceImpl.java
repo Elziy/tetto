@@ -1,10 +1,13 @@
 package com.elite.tetto.recommend.service.impl;
 
+import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.constant.RecommendConstant;
+import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.recommend.dao.RecommendDao;
 import com.elite.tetto.recommend.entity.UserTagsEntity;
 import com.elite.tetto.recommend.service.RecommendService;
 import org.apache.commons.lang.time.DateUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +22,9 @@ public class RecommendServiceImpl implements RecommendService {
     
     @Resource
     private RecommendDao recommendDao;
+    
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redisTemplate;
     
     /**
      * 获取推荐图集id
@@ -47,6 +53,21 @@ public class RecommendServiceImpl implements RecommendService {
         }
         return recommendAtlasIds;
     }
+    
+    /**
+     * 获取喜欢的标签
+     *
+     * @param uid   用户id
+     * @param limit 限制
+     * @return {@link Set}<{@link String}>
+     */
+    @Override
+    public Set<String> getLikeTags(Long uid, Long limit) {
+        Set<UserTagsEntity> likeAtlasTags = recommendDao.getLikeAtlasTags(uid, limit);
+        Set<String> likeTags = likeAtlasTags.stream().map(UserTagsEntity::getTag).collect(Collectors.toSet());
+        return likeTags;
+    }
+    
     
     /**
      * 获取推荐标签
@@ -91,12 +112,12 @@ public class RecommendServiceImpl implements RecommendService {
     /**
      * 获取热门标签
      *
-     * @param uid   用户id
-     * @param limit 限制
      * @return {@link List}<{@link String}>
      */
     @Override
-    public List<String> getHotTags(Long uid, Long limit) {
-        return null;
+    public Set<String> getHotTags(int limit) {
+        String yesterdayDateStr = DateUtil.getYesterdayDateStr();
+        Set<String> strings = redisTemplate.opsForZSet().reverseRange(ImageConstant.TAGS_TOP + ":" + yesterdayDateStr, 0, limit - 1);
+        return strings;
     }
 }

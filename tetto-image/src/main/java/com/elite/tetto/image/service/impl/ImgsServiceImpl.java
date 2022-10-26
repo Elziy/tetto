@@ -18,7 +18,9 @@ import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
 import com.elite.tetto.image.service.*;
+import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.image.util.SecurityUtil;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +60,9 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
     @Resource(name = "threadPoolExecutor")
     private ThreadPoolExecutor executor;
     
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redisTemplate;
+    
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<ImgsEntity> page = this.page(
@@ -80,7 +85,7 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         Authentication authentication = context.getAuthentication();
         LoginUserRes loginUserRes = (LoginUserRes) authentication.getPrincipal();
         Long loginUserId = loginUserRes.getUid();
-    
+        
         ImgRes imgRes = new ImgRes();
         
         CompletableFuture<AtlasEntity> atlasEntityCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -120,10 +125,11 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
             imgRes.setImgEntities(imgEntities);
         }, executor);
         
-        CompletableFuture<Void> tag = atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {
+        CompletableFuture<List<String>> tag = CompletableFuture.supplyAsync(() -> {
             // 获取作品集标签 缓存
             List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
             imgRes.setTags(tags);
+            return tags;
         }, executor);
         
         CompletableFuture<Void> latest = atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {
@@ -142,6 +148,13 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
         atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {
             // 添加浏览历史
             historyService.addHistory(loginUserId, aid);
+        }, executor);
+        
+        tag.thenAcceptAsync(tags -> {
+            // 将标签信息放入redis统计
+            // 获取当前日期
+            String dateStr = DateUtil.getNowDateStr();
+            tags.forEach(t -> redisTemplate.opsForZSet().incrementScore(ImageConstant.TAGS_TOP + ":" + dateStr, t, 1));
         }, executor);
         
         CompletableFuture.allOf(user, img, tag, latest, likes).get();

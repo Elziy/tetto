@@ -5,6 +5,7 @@ import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.vo.AtlasRes;
+import com.elite.tetto.image.entity.vo.RecommendRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.service.AtlasService;
 import com.elite.tetto.image.util.SecurityUtil;
@@ -84,9 +85,9 @@ public class AtlasController {
     // 获取10个推荐作品集
     @GetMapping("/recommend")
     public R getRecommendAtlas() {
-        List<AtlasRes> atlasRes = atlasService.getRecommendAtlas();
-        if (atlasRes != null) {
-            return R.ok().put("data", atlasRes);
+        RecommendRes recommendAtlas = atlasService.getRecommendAtlas();
+        if (recommendAtlas != null) {
+            return R.ok().put("data", recommendAtlas);
         } else {
             return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
         }

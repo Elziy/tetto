@@ -17,6 +17,7 @@ import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.elite.tetto.image.entity.ImgsEntity;
 import com.elite.tetto.image.entity.vo.AtlasRes;
+import com.elite.tetto.image.entity.vo.RecommendRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 import com.elite.tetto.image.feign.RecommendClient;
 import com.elite.tetto.image.feign.SearchClient;
@@ -226,15 +227,20 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
      * @return
      */
     @Override
-    public List<AtlasRes> getRecommendAtlas() {
+    public RecommendRes getRecommendAtlas() {
         Long loginUserId = SecurityUtil.getLoginUserId();
         try {
             R r = recommendClient.getRecommendAtlasIds();
             if (r.getCode() == 0) {
                 List<Long> atlasIds = r.getData(new TypeReference<List<Long>>() {
                 });
+                List<String> tags = r.getData("tags", new TypeReference<List<String>>() {
+                });
                 List<AtlasRes> atlasRes = this.baseMapper.getRecommendAtlas(atlasIds, loginUserId, 20);
-                return atlasRes;
+                RecommendRes recommendRes = new RecommendRes();
+                recommendRes.setAtlas(atlasRes);
+                recommendRes.setTags(tags);
+                return recommendRes;
             } else {
                 return null;
             }

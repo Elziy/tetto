@@ -23,6 +23,6 @@ public class RecommendController {
         Long uid = SecurityUtil.getLoginUserId();
         List<String> tags = recommendService.getRecommendTags(uid, RecommendConstant.RECOMMEND_TAG_LIMIT);
         List<Long> atlasIds = recommendService.getRecommendAtlasIds(uid, RecommendConstant.RECOMMEND_ATLAS_LIMIT, tags);
-        return R.ok().put("data", atlasIds);
+        return R.ok().put("data", atlasIds).put("tags", tags);
     }
 }

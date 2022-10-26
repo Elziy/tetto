@@ -4,13 +4,11 @@ import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.R;
 import com.elite.tetto.image.entity.AtlasLabelEntity;
 import com.elite.tetto.image.service.AtlasLabelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.Map;
-
-
 
 /**
  * 
@@ -20,10 +18,16 @@ import java.util.Map;
  * @date 2022-10-07 14:39:01
  */
 @RestController
-@RequestMapping("image/atlaslabel")
+@RequestMapping("image/tags")
 public class AtlasLabelController {
-    @Autowired
+    @Resource
     private AtlasLabelService atlasLabelService;
+    
+    // 获取热门标签
+    @GetMapping("/hotTags")
+    public R getHotTags() {
+        return R.ok().put("data", atlasLabelService.getHotTags());
+    }
 
     /**
      * 列表

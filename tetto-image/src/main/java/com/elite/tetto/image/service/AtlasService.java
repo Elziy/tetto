@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.image.entity.AtlasEntity;
 import com.elite.tetto.image.entity.vo.AtlasRes;
+import com.elite.tetto.image.entity.vo.RecommendRes;
 import com.elite.tetto.image.entity.vo.UploadAtlasVo;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public interface AtlasService extends IService<AtlasEntity> {
      */
     List<AtlasRes> getNewAtlas();
     
-    List<AtlasRes> getRecommendAtlas();
+    RecommendRes getRecommendAtlas();
     
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>

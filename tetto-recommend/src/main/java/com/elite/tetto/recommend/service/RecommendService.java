@@ -1,6 +1,7 @@
 package com.elite.tetto.recommend.service;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RecommendService {
     
@@ -16,6 +17,16 @@ public interface RecommendService {
     
     
     /**
+     * 获取喜欢的标签
+     *
+     * @param uid   用户id
+     * @param limit 限制
+     * @return {@link Set}<{@link String}>
+     */
+    Set<String> getLikeTags(Long uid, Long limit);
+    
+    
+    /**
      * 获取推荐标签
      *
      * @param uid   用户id
@@ -27,9 +38,7 @@ public interface RecommendService {
     /**
      * 获取热门标签
      *
-     * @param uid   用户id
-     * @param limit 限制
      * @return {@link List}<{@link String}>
      */
-    List<String> getHotTags(Long uid, Long limit);
+    Set<String> getHotTags(int limit);
 }
