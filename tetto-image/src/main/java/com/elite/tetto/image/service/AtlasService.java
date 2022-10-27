@@ -60,7 +60,34 @@ public interface AtlasService extends IService<AtlasEntity> {
      */
     List<AtlasRes> getNewAtlas();
     
+    /**
+     * 获取推荐图集
+     *
+     * @return {@link RecommendRes}
+     */
     RecommendRes getRecommendAtlas();
+    
+    /**
+     * 添加热榜图集
+     *
+     * @param aid 图集id
+     */
+    void addHotAtlas(Long aid);
+    
+    /**
+     * 获取热榜的图集id
+     *
+     * @param key 获取热榜日期的key 2022-01-01
+     * @return {@link List}<{@link Long}>
+     */
+    List<Long> getHotTopAtlasId(String key);
+    
+    /**
+     * 获取昨天热榜图集
+     *
+     * @return {@link List}<{@link AtlasRes}>
+     */
+    List<AtlasRes> getYesterdayHotTopAtlas();
     
     /**
      * 通过用户id获取所有(含非公开)作品集信息<br>
@@ -85,7 +112,7 @@ public interface AtlasService extends IService<AtlasEntity> {
      * 通过id删除图集<br>
      * 用于删除缓存
      *
-     * @param aid          图集id
+     * @param aid         图集id
      * @param loginUserId 登录用户id
      * @return boolean
      */

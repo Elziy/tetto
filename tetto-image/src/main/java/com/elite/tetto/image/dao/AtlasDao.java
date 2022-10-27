@@ -43,4 +43,12 @@ public interface AtlasDao extends BaseMapper<AtlasEntity> {
      * @return {@link List}<{@link AtlasRes}>
      */
     List<AtlasRes> getRecommendAtlas(@Param("ids") List<Long> ids, @Param("uid") Long uid, @Param("limit") int limit);
+    
+    /**
+     * 通过图集id列表获取图集res
+     *
+     * @param atlasIdList 图集id列表
+     * @return {@link List}<{@link AtlasRes}>
+     */
+    List<AtlasRes> getAtlasResByAidList(@Param("ids") List<Long> atlasIdList);
 }

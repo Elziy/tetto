@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
+import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import com.elite.tetto.common.utils.R;
@@ -18,7 +19,6 @@ import com.elite.tetto.image.entity.vo.ImgRes;
 import com.elite.tetto.image.entity.vo.OnlyImgRes;
 import com.elite.tetto.image.feign.AuthClient;
 import com.elite.tetto.image.service.*;
-import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.image.util.SecurityUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -150,6 +150,11 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
             historyService.addHistory(loginUserId, aid);
         }, executor);
         
+        atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {
+            // 添加热榜
+            atlasService.addHotAtlas(aid);
+        }, executor);
+        
         tag.thenAcceptAsync(tags -> {
             // 将标签信息放入redis统计
             // 获取当前日期
@@ -207,6 +212,11 @@ public class ImgsServiceImpl extends ServiceImpl<ImgsDao, ImgsEntity> implements
             // 获取作品集标签 缓存
             List<String> tags = atlasLabelService.getAtlasLabelsByAid(aid);
             onlyImgRes.setTags(tags);
+        }, executor);
+    
+        atlasEntityCompletableFuture.thenAcceptAsync(atlas -> {
+            // 添加热榜
+            atlasService.addHotAtlas(aid);
         }, executor);
         
         CompletableFuture.allOf(likes, imgs, tag).get();

@@ -21,4 +21,13 @@ public class ImageConstant {
     
     // 热门标签排行榜前缀
     public static final String TAGS_TOP = "tags_top";
+    
+    // 统计热门图集排行榜前缀
+    public static final String ATLAS_TOP = "atlas_top";
+    
+    // 热门图集排行榜前缀
+    public static final String HOT_ATLAS_TOP = "hot_atlas_top";
+    
+    // 获取热榜图集数量
+    public static final Long ATLAS_TOP_NUM = 10L;
 }

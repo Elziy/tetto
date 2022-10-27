@@ -82,7 +82,7 @@ public class AtlasController {
         return R.ok().put("data", atlasRes);
     }
     
-    // 获取10个推荐作品集
+    // 获取20个推荐作品集
     @GetMapping("/recommend")
     public R getRecommendAtlas() {
         RecommendRes recommendAtlas = atlasService.getRecommendAtlas();
@@ -106,6 +106,13 @@ public class AtlasController {
         } catch (Exception e) {
             return R.error(ExceptionCode.DELETE_ATLAS_ERROR.getCode(), e.getMessage());
         }
+    }
+    
+    // 获得昨天热榜
+    @GetMapping("/hot")
+    public R getHotAtlas() {
+        List<AtlasRes> atlasRes = atlasService.getYesterdayHotTopAtlas();
+        return R.ok().put("data", atlasRes);
     }
     
     /**

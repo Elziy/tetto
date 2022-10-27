@@ -1,14 +1,17 @@
 package com.elite.tetto.image.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.common.constant.ImageConstant;
 import com.elite.tetto.common.entity.vo.LoginUserRes;
 import com.elite.tetto.common.entity.vo.es.AtlasESModel;
+import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import com.elite.tetto.common.utils.R;
@@ -33,10 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -224,7 +224,9 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
     }
     
     /**
-     * @return
+     * 获取推荐图集
+     *
+     * @return {@link RecommendRes}
      */
     @Override
     public RecommendRes getRecommendAtlas() {
@@ -247,6 +249,52 @@ public class AtlasServiceImpl extends ServiceImpl<AtlasDao, AtlasEntity> impleme
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    
+    /**
+     * 添加热榜图集
+     *
+     * @param aid 图集id
+     */
+    @Override
+    public void addHotAtlas(Long aid) {
+        String nowDateStr = DateUtil.getNowDateStr();
+        String key = ImageConstant.ATLAS_TOP + ":" + nowDateStr;
+        redisTemplate.opsForZSet().incrementScore(key, aid.toString(), 1);
+    }
+    
+    /**
+     * 获取热榜的图集id
+     *
+     * @param key 获取热榜日期的key 2022-01-01
+     * @return {@link List}<{@link Long}>
+     */
+    @Override
+    public List<Long> getHotTopAtlasId(String key) {
+        key = ImageConstant.ATLAS_TOP + ":" + key;
+        Set<String> atlasIds = redisTemplate.opsForZSet().reverseRange(key, 0, ImageConstant.ATLAS_TOP_NUM - 1);
+        return atlasIds.stream().map(Long::parseLong).collect(Collectors.toList());
+    }
+    
+    /**
+     * 获取昨天热榜图集
+     *
+     * @return {@link List}<{@link AtlasRes}>
+     */
+    @Override
+    public List<AtlasRes> getYesterdayHotTopAtlas() {
+        String key = DateUtil.getYesterdayDateStr();
+        // 从redis中获取图集信息
+        String s = redisTemplate.opsForValue().get(ImageConstant.HOT_ATLAS_TOP + ":" + key);
+        if (StringUtils.isNotBlank(s)) {
+            return JSON.parseArray(s, AtlasRes.class);
+        } else {
+            List<Long> atlasIdList = getHotTopAtlasId(key);
+            List<AtlasRes> atlasResList = this.baseMapper.getAtlasResByAidList(atlasIdList);
+            // 保存到redis
+            redisTemplate.opsForValue().set(ImageConstant.HOT_ATLAS_TOP + ":" + key, JSON.toJSONString(atlasResList));
+            return atlasResList;
         }
     }
     

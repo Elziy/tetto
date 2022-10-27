@@ -58,5 +58,25 @@
 			#{id}
 		</foreach>)
 	</select>
-
+	<select id="getAtlasResByAidList" resultType="com.elite.tetto.image.entity.vo.AtlasRes">
+SELECT a.id,
+		       a.u_id,
+		       a.title,
+		       a.introduce,
+		       a.is_public,
+		       a.thumbnail_url,
+		       a.date,
+		       u.username,
+		       u.header as avatar
+		FROM img_atlas AS a
+			     JOIN usr_user AS u ON a.u_id = u.id
+		where a.id in
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		order by field(a.id,
+		<foreach collection="ids" item="id" separator=",">
+			#{id}
+		</foreach>)
+	</select>
 </mapper>
