@@ -3,6 +3,7 @@ package com.elite.tetto.search.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.elite.tetto.common.constant.ESConstant;
 import com.elite.tetto.common.entity.vo.es.AtlasESModel;
+import com.elite.tetto.common.utils.DateUtil;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.search.config.ElasticSearchConfig;
 import com.elite.tetto.search.dao.SearchDao;
@@ -10,6 +11,7 @@ import com.elite.tetto.search.entity.SearchParam;
 import com.elite.tetto.search.entity.SearchResult;
 import com.elite.tetto.search.entity.vo.AtlasRes;
 import com.elite.tetto.search.entity.vo.SuggestTags;
+import com.elite.tetto.search.service.SearchService;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -19,6 +21,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -36,6 +39,8 @@ public class SearchServiceImpl implements SearchService {
     @Resource
     RestHighLevelClient restHighLevelClient;
     
+    @Resource(name = "stringRedisTemplate")
+    private StringRedisTemplate redisTemplate;
     
     /**
      * 从es中检索图集
@@ -45,6 +50,8 @@ public class SearchServiceImpl implements SearchService {
      */
     @Override
     public SearchResult searchAtlasPage(SearchParam searchParam) {
+        // 添加查询热榜
+        this.addHotSearch(searchParam.getKeyword());
         // 1.准备检索请求
         SearchRequest searchRequest = buildSearchRequest(searchParam);
         try {
@@ -126,6 +133,48 @@ public class SearchServiceImpl implements SearchService {
             suggestTag.setSuggest(suggest);
         });
         return suggestTags;
+    }
+    
+    /**
+     * 添加检索热榜
+     *
+     * @param keyword 关键字
+     */
+    @Override
+    public void addHotSearch(String keyword) {
+        if (StringUtils.isEmpty(keyword)) {
+            return;
+        }
+        try {
+            String tag = searchDao.getTag("#" + keyword);
+            if (StringUtils.isEmpty(tag)) {
+                return;
+            }
+            // 去掉#号
+            tag = tag.substring(1);
+            Date nowDate = DateUtil.getNowDate();
+            String hour = DateUtil.format(nowDate, "yyyy_MM_dd_HH");
+            String key = ESConstant.ATLAS_HOT_SEARCH + hour;
+            redisTemplate.opsForZSet().incrementScore(key, tag, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 获取热搜榜
+     *
+     * @return {@link List}<{@link String}>
+     */
+    @Override
+    public Set<String> getHotSearch() {
+        Date nowDate = DateUtil.getNowDate();
+        // 获取上一个小时
+        Date lastHour = DateUtil.offsetHour(nowDate, -1);
+        String lastHourStr = DateUtil.format(lastHour, "yyyy_MM_dd_HH");
+        String key = ESConstant.ATLAS_HOT_SEARCH + lastHourStr;
+        Set<String> tags = redisTemplate.opsForZSet().reverseRange(key, 0, ESConstant.ATLAS_HOT_SEARCH_SIZE - 1);
+        return tags;
     }
     
     private SearchRequest buildSearchRequest(SearchParam searchParam) {

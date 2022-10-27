@@ -28,4 +28,12 @@ public interface SearchDao {
      * @return {@link List}<{@link String}>
      */
     List<SuggestTags> getSuggestTags(@Param("tag") String tag);
+    
+    /**
+     * 通过搜索关键词查找相关标签
+     *
+     * @param keyword 关键字
+     * @return {@link String}
+     */
+    String getTag(@Param("keyword") String keyword);
 }

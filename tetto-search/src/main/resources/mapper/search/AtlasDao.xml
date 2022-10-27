@@ -38,5 +38,11 @@
 		where label_name like concat('%', #{tag}, '%')
 		limit 10
 	</select>
+	<select id="getTag" resultType="java.lang.String">
+		select label_name
+		from img_atlas_label
+		where label_name = #{keyword}
+		limit 1
+	</select>
 
 </mapper>

@@ -16,6 +16,9 @@ public class ImageConstant {
     // 图集标签缓存前缀
     public static final String ATLAS_LABEL_CACHE_PREFIX = "atlas_label";
     
+    // 图集搜索标签缓存前缀
+    public static final String ATLAS_Search_LABEL_CACHE_PREFIX = "atlas_search_label";
+    
     // 热门标签排行榜前缀
     public static final String TAGS_TOP = "tags_top";
 }

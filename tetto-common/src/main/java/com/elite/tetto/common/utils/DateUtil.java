@@ -32,5 +32,8 @@ public class DateUtil {
         return new SimpleDateFormat(format).format(date);
     }
     
-    
+    public static Date offsetHour(Date nowDate, int i) {
+        nowDate.setTime(nowDate.getTime() + (long) i * 60 * 60 * 1000);
+        return nowDate;
+    }
 }

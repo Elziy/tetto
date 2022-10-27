@@ -5,11 +5,12 @@ import com.elite.tetto.common.utils.R;
 import com.elite.tetto.search.entity.SearchParam;
 import com.elite.tetto.search.entity.SearchResult;
 import com.elite.tetto.search.entity.vo.SuggestTags;
-import com.elite.tetto.search.service.impl.SearchService;
+import com.elite.tetto.search.service.SearchService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/search")
@@ -69,4 +70,14 @@ public class SearchController {
         return R.ok().put("data", tags);
     }
     
+    /**
+     * 获取热搜榜
+     *
+     * @return {@link R}
+     */
+    @GetMapping("/hotSearch")
+    public R getHotSearch() {
+        Set<String> hotSearch = searchService.getHotSearch();
+        return R.ok().put("data", hotSearch);
+    }
 }

@@ -1,4 +1,4 @@
-package com.elite.tetto.search.service.impl;
+package com.elite.tetto.search.service;
 
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.search.entity.SearchParam;
@@ -6,6 +6,7 @@ import com.elite.tetto.search.entity.SearchResult;
 import com.elite.tetto.search.entity.vo.SuggestTags;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SearchService {
     /**
@@ -31,4 +32,18 @@ public interface SearchService {
      * @return {@link List}<{@link String}>
      */
     List<SuggestTags> getSuggestTags(String tag);
+    
+    /**
+     * 添加检索热榜
+     *
+     * @param keyword 关键字
+     */
+    void addHotSearch(String keyword);
+    
+    /**
+     * 获取热搜榜
+     *
+     * @return {@link List}<{@link String}>
+     */
+    Set<String> getHotSearch();
 }
