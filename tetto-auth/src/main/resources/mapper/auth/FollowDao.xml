@@ -2,13 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.elite.tetto.auth.dao.FollowDao">
-
+	
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.elite.tetto.auth.entity.FollowEntity" id="followMap">
-        <result property="id" column="id"/>
-        <result property="uid" column="uid"/>
-        <result property="fid" column="fid"/>
-    </resultMap>
+	<resultMap type="com.elite.tetto.auth.entity.FollowEntity" id="followMap">
+		<result property="id" column="id"/>
+		<result property="uid" column="uid"/>
+		<result property="fid" column="fid"/>
+	</resultMap>
+	
+	<select id="getFollowers" resultType="com.elite.tetto.auth.entity.vo.FollowerRes">
+		select usr_user.id as uid,
+		       username    as username,
+		       header      as avatar,
+		       introduce   as introduce
+		from follow
+			     join usr_user on follow.uid = usr_user.id
+		where fid = #{uid}
+		order by follow.id desc
+	</select>
+	
+	<select id="getFollowings" resultType="com.elite.tetto.auth.entity.vo.FollowingRes">
+		select usr_user.id as uid,
+		       username    as username,
+		       header      as avatar,
+		       introduce   as introduce
+		from follow
+			     join usr_user on follow.fid = usr_user.id
+		where uid = #{uid}
+		order by follow.id desc
+	</select>
 
 
 </mapper>

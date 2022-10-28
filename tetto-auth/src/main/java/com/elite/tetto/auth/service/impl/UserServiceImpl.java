@@ -224,8 +224,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         setBaseInfo(userInfoRes, userEntity);
         // todo 设置可以访问的其他信息
         // 设置请求用户的关注信息
-        Integer followers = followService.getFollowers(uid);
-        Integer following = followService.getFollowing(uid);
+        Integer followers = followService.getFollowersNum(uid);
+        Integer following = followService.getFollowingNum(uid);
         userInfoRes.setFollowers(followers);
         userInfoRes.setFollowing(following);
         

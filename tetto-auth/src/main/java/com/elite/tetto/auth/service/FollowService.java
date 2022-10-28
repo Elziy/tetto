@@ -2,8 +2,11 @@ package com.elite.tetto.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.elite.tetto.auth.entity.FollowEntity;
+import com.elite.tetto.auth.entity.vo.FollowerRes;
+import com.elite.tetto.auth.entity.vo.FollowingRes;
 import com.elite.tetto.common.utils.PageUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +42,7 @@ public interface FollowService extends IService<FollowEntity> {
      * @param uid 用户id
      * @return {@link Integer}
      */
-    Integer getFollowers(long uid);
+    Integer getFollowersNum(long uid);
     
     /**
      * 获取用户的关注数量
@@ -47,7 +50,7 @@ public interface FollowService extends IService<FollowEntity> {
      * @param uid 用户id
      * @return {@link Integer}
      */
-    Integer getFollowing(long uid);
+    Integer getFollowingNum(long uid);
     
     /**
      * 获取用户是否关注另一个用户
@@ -66,5 +69,21 @@ public interface FollowService extends IService<FollowEntity> {
      * @return boolean
      */
     boolean isFollowed(long uid, long fid);
+    
+    /**
+     * 获取用户的粉丝列表
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link FollowEntity}>
+     */
+    List<FollowerRes> getFollowers(long uid);
+    
+    /**
+     * 获取用户的关注列表
+     *
+     * @param userId 用户id
+     * @return {@link List}<{@link FollowerRes}>
+     */
+    List<FollowingRes> getFollowings(Long userId);
 }
 

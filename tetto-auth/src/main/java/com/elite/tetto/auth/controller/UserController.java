@@ -117,37 +117,7 @@ public class UserController {
         }
     }
     
-    /**
-     * 关注用户
-     *
-     * @param fid 被关注者ID
-     * @return {@link R}
-     */
-    @GetMapping("follow/{fid}")
-    public R follow(@PathVariable long fid) {
-        boolean b = userService.follow(fid);
-        if (b) {
-            return R.ok();
-        } else {
-            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
-        }
-    }
-    
-    /**
-     * 取消关注
-     *
-     * @param fid 被关注者ID
-     * @return {@link R}
-     */
-    @GetMapping("unfollow/{fid}")
-    public R unfollow(@PathVariable long fid) {
-        boolean b = userService.unfollow(fid);
-        if (b) {
-            return R.ok();
-        } else {
-            return R.error(ExceptionCode.UNKNOWN_EXCEPTION.getCode(), ExceptionCode.UNKNOWN_EXCEPTION.getMsg());
-        }
-    }
+
     
     /**
      * 检查邮箱是否存在

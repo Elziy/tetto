@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.elite.tetto.auth.dao.FollowDao;
 import com.elite.tetto.auth.entity.FollowEntity;
+import com.elite.tetto.auth.entity.vo.FollowerRes;
+import com.elite.tetto.auth.entity.vo.FollowingRes;
 import com.elite.tetto.auth.service.FollowService;
 import com.elite.tetto.common.utils.PageUtils;
 import com.elite.tetto.common.utils.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -57,7 +60,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
      * @return {@link Integer}
      */
     @Override
-    public Integer getFollowers(long uid) {
+    public Integer getFollowersNum(long uid) {
         LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FollowEntity::getFid, uid);
         return Math.toIntExact(this.count(wrapper));
@@ -70,7 +73,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
      * @return {@link Integer}
      */
     @Override
-    public Integer getFollowing(long uid) {
+    public Integer getFollowingNum(long uid) {
         LambdaQueryWrapper<FollowEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FollowEntity::getUid, uid);
         return Math.toIntExact(this.count(wrapper));
@@ -104,6 +107,36 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
         wrapper.eq(FollowEntity::getUid, fid);
         wrapper.eq(FollowEntity::getFid, uid);
         return this.count(wrapper) > 0;
+    }
+    
+    /**
+     * 获取用户的粉丝列表
+     *
+     * @param uid 用户id
+     * @return {@link List}<{@link FollowEntity}>
+     */
+    @Override
+    public List<FollowerRes> getFollowers(long uid) {
+        List<FollowerRes> followers = this.baseMapper.getFollowers(uid);
+        for (FollowerRes follower : followers) {
+            follower.setFollowing(this.isFollow(uid, follower.getUid()));
+        }
+        return followers;
+    }
+    
+    /**
+     * 获取用户的关注列表
+     *
+     * @param userId 用户id
+     * @return {@link List}<{@link FollowerRes}>
+     */
+    @Override
+    public List<FollowingRes> getFollowings(Long userId) {
+        List<FollowingRes> followings = this.baseMapper.getFollowings(userId);
+        for (FollowingRes following : followings) {
+            following.setFollowed(this.isFollowed(userId, following.getUid()));
+        }
+        return followings;
     }
     
 }
