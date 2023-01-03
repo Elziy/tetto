@@ -7,7 +7,7 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 192.168.31.101:8848 #配置中心地址
+        server-addr: 192.168.0.101:8848 #配置中心地址
         file-extension: yaml #指定yaml格式的配置
         group: DEV_GROUP
   session:
