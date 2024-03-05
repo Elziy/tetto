@@ -1,6 +1,25 @@
 # tetto
 > tetto(特图)插画分享平台
 
+前端项目地址：[tetto-web](https://github.com/Elziy/tetto-vue)
+
+## 项目截图
+![001.png](./images/001.png)
+![002.png](./images/002.png)
+![003.png](./images/003.png)
+![004.png](./images/004.png)
+![005.png](./images/005.png)
+![006-1.png](./images/006-1.png)
+![006-2.png](./images/006-2.png)
+![007.png](./images/007.png)
+![008.png](./images/008.png)
+![009.png](./images/009.png)
+![010.png](./images/010.png)
+![011.png](./images/011.png)
+
+_**界面关系图**_
+![012.png](./images/界面关系图.jpg)
+
 ## 项目目录
 
 ```
@@ -16,6 +35,9 @@ tetto
 ├── tetto-upload          // 文件上传模块
 ├──pom.xml                // 公共依赖
 ```
+
+**_架构图_**
+![013.png](./images/分布式微服务架构图.png)
 
 ## 运行准备
 
